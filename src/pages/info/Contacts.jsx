@@ -1,140 +1,75 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-// import { mockDataContacts } from "../../constants/mockData";
-import { Checkbox, TextField, useTheme } from "@mui/material";
+import { Button, Checkbox, TextField, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import Header from "../../components/Header";
-// import contactsColumns from "../../constants/contactsColumns";
 
 const mockDataContacts =[{
   id: 1,
-  name: "Steve Goodman",
+  name: "",
   rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
+  desc: "",
+  quan: "",
   discountPercentage: "",
   discountAmount: "",
   isActive: "",
-  registrarId: 92197,
+  registrarId:"",
 },
 {
   id: 2,
-  name: "Steve Goodman",
+  name: "",
   rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
+  desc: "",
+  quan: "",
   discountPercentage: "",
   discountAmount: "",
   isActive: "",
-  registrarId: 92197,
+  registrarId:"",
 },
 {
   id: 3,
-  name: "Steve Goodman",
+  name: "",
   rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
+  desc: "",
+  quan: "",
   discountPercentage: "",
   discountAmount: "",
   isActive: "",
-  registrarId: 92197,
+  registrarId:"",
 },
 {
-  id: 4,
-  name: "Steve Goodman",
+  id: "",
+  name: "",
   rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
+  desc: "",
+  quan: "",
   discountPercentage: "",
   discountAmount: "",
   isActive: "",
-  registrarId: 92197,
+  registrarId:"",
 },
 {
-  id: 5,
-  name: "Steve Goodman",
+  id: "",
+  name: "",
   rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
+  desc: "",
+  quan: "",
   discountPercentage: "",
   discountAmount: "",
   isActive: "",
-  registrarId: 92197,
-},
-{
-  id: 6,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "",
-  registrarId: 92197,
-},
-{
-  id: 7,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "",
-  registrarId: 92197,
-},
-{
-  id:8,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "",
-  registrarId: 92197,
-},
-{
-  id: 9,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "",
-  registrarId: 92197,
-},
-{
-  id: 10,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "true",
-  registrarId: 92197,
-},
-{
-  id: 11,
-  name: "Steve Goodman",
-  rate: "",
-  desc: 11,
-  quan: "(444)555-6239",
-  discountPercentage: "",
-  discountAmount: "",
-  isActive: "false",
-  registrarId: 92197,
+  registrarId:"",
 },
 
 ]
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const [visibleRows, setVisibleRows] = useState(5);
+  const [rows, setRows] = useState([...mockDataContacts.slice(0, visibleRows)]);
   const [rate, setRate] = useState(0);
+  const [icode, setICode] = useState(0);
+
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -144,13 +79,15 @@ const Contacts = () => {
     setRate(newRate);
     recalculateDiscountAmount(newRate, discountPercentage);
   };
-
+  const handleItemChange = (event) => {
+    const newItem = parseFloat(event.target.value) || 0;
+    setICode(newItem);
+  };
   const handleDiscountPercentageChange = (event) => {
     const newDiscountPercentage = parseFloat(event.target.value) || 0;
     setDiscountPercentage(newDiscountPercentage);
     recalculateDiscountAmount(rate, newDiscountPercentage);
   };
-
 
   const recalculateDiscountAmount = (newRate, newDiscountPercentage) => {
     const newDiscountAmount = (newRate * newDiscountPercentage) / 100;
@@ -160,50 +97,70 @@ const Contacts = () => {
   const handleActiveChange = (event) => {
     setIsActive(event.target.checked);
   };
+  
+  const handleCellChange = (id, field, value) => {
+    setRows((prevRows) => {
+      const updatedRows = [...prevRows];
+      const rowIndex = updatedRows.findIndex((row) => row.id === id);
+      
+      if (rowIndex !== -1) {
+        updatedRows[rowIndex] = {
+          ...updatedRows[rowIndex],
+          [field]: value,
+        };
+      }
+  
+      return updatedRows;
+    });
+  };
+  const handleAddRow = () => {
+    const newRow = {
+      id: "",
+      name: "",
+      rate: "",
+      desc: "",
+      quan: "",
+      discountPercentage: "",
+      discountAmount: "",
+      isActive: false,
+      registrarId: "",
+    };
+    setRows((prevRows) => [...prevRows, newRow]);
+    setVisibleRows((prevVisibleRows) => prevVisibleRows + 1);
+  };
   const contactsColumns = [
-    { field: "id", headerName: "Item Code", flex: 0.5 },
-    { field: "registrarId", headerName: "HSN/SAC Code" },
-    {
-        field: "name",
-        headerName: "Job work Sac",
-        flex: 1,
-        cellClassName: "name-column--cell",
-    },
-    {
-        field: "desc",
-        headerName: "Description",
-        // type: "number",
-        // headerAlign: "left",
-        // align: "left",
-        flex: 1,
-    },
-    {
-        field: "quan",
-        headerName: "Quantity",
-        flex: 1,
-    },
-    { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField value={rate} onChange={handleRateChange} /> },
-    { field: 'discountPercentage', headerName: 'Discount %', flex: 1, renderCell: (params) => <TextField value={discountPercentage} onChange={handleDiscountPercentageChange} /> },
+    { field: "id", headerName: "Item Code", flex: 0.7, renderCell: (params) => <TextField variant="standard" value={icode} onChange={handleItemChange} /> },
+    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(e) => handleCellChange(params.id, 'registrarId', e.target.value)} /> },
+    { field: "name", headerName: "Job work Sac", flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.name} onChange={(e) => handleCellChange(params.id, 'name', e.target.value)} /> },
+    { field: "desc", headerName: "Description", flex: 2.5, renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(e) => handleCellChange(params.id, 'desc', e.target.value)} /> },
+    { field: "quan", headerName: "Quantity", flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.quan} onChange={(e) => handleCellChange(params.id, 'quan', e.target.value)} /> },
+    { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField variant="standard" value={rate} onChange={handleRateChange} /> },
+    { field: 'discountPercentage', headerName: 'Discount %', renderCell: (params) => <TextField variant="standard" value={discountPercentage} onChange={handleDiscountPercentageChange} /> },
     { 
       field: 'discountAmount', 
       headerName: 'Discount Amount', 
       flex: 1, 
       value: discountAmount,  // This should be calculated based on rate and discountPercentage
-      renderCell: (params) => <TextField value={discountAmount} disabled />, // Display the calculated value
+      renderCell: (params) => <TextField variant="standard" value={discountAmount} disabled />, // Display the calculated value
     },
     { 
       field: 'isActive', 
       headerName: 'Active', 
-      flex: 1, 
+      flex: 0.3, 
       renderCell: (params) => <Checkbox checked={isActive} onChange={handleActiveChange} />, 
     },
   ];
   return (
     <Box m="20px">
 <Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." />
+<Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleAddRow}>
+          Add New Row
+        </Button>
+      </Box>
       <Box
         // m="40px 0 0 0"
-        height="75vh"
+        height={`${visibleRows * 50 + 150}px`} 
         // custom css for material ui
         sx={{
           "& .MuiDataGrid-root": {
@@ -235,9 +192,8 @@ const Contacts = () => {
           },
         }}
       >
-
         <DataGrid
-          rows={mockDataContacts}
+          rows={rows}
           columns={contactsColumns}
           components={{ Toolbar: GridToolbar }}
         />

@@ -5,8 +5,6 @@ import { useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import Contacts from './Contacts'
 const top100Films = [
     { label: 'Tarun1', year: 1994 },
@@ -70,8 +68,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -95,8 +93,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -119,8 +117,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -144,8 +142,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -169,8 +167,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -194,8 +192,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -219,8 +217,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -244,8 +242,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -269,8 +267,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -294,8 +292,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -319,8 +317,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -344,8 +342,8 @@ const Team = () => {
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
+                                    my: 2,
+                                    ml: 5
 
                                 }}
                             >
@@ -362,12 +360,13 @@ const Team = () => {
                                 renderInput={(params) => <TextField {...params} label=" Currency Converter" />}
                             />
                         </Grid>
-                        <Grid item xs={12} component={Paper} sx={{ width: "30%", ml: 45, mt: 2 }}>
+                        <Grid item xs={12} component={Paper} sx={{ width: "100%", mx: 50, mt: 2 }}>
                             <FormGroup sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 alignItems: "center",
-                                mt: 2
+                                mt: 2,
+                                right:1
                             }}>
                                 <FormControlLabel control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
                                 <FormControlLabel control={<Checkbox />} label="Quality Assured " />

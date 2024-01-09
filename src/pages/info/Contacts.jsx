@@ -200,7 +200,7 @@ const Contacts = () => {
   ];
   return (
     <Box m="20px">
-<Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." />
+{/* <Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
       <Box
         // m="40px 0 0 0"
         height="75vh"

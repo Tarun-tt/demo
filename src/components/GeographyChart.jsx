@@ -9,7 +9,7 @@ const GeographyChart = ({ isDashboard = false }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    
+
     return (
         <ResponsiveChoropleth
             data={data}

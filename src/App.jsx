@@ -20,7 +20,7 @@ const App = () => {
             <SidebarMenu />
 
             <section className="content">
-              <Topbar />
+              {/* <Topbar /> */}
 
               <Routes>
                 {/* <Route path="/" element={<Dashboard />} /> */}

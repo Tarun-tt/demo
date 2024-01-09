@@ -152,12 +152,7 @@ const Contacts = () => {
   ];
   return (
     <Box m="20px">
-<Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." />
-<Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleAddRow}>
-          Add New Row
-        </Button>
-      </Box>
+{/* <Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
       <Box
         // m="40px 0 0 0"
         height={`${visibleRows * 50 + 150}px`} 

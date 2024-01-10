@@ -3,7 +3,7 @@ import { Button, Checkbox, TextField, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
 import { useState } from "react";
-import Header from "../../components/Header";
+// import Header from "../../components/Header";
 
 const mockDataContacts =[{
   id: 1,
@@ -69,6 +69,11 @@ const Contacts = () => {
   const [rows, setRows] = useState([...mockDataContacts.slice(0, visibleRows)]);
   const [rate, setRate] = useState(0);
   const [icode, setICode] = useState(0);
+  const [hsn, setHsn] = useState("");
+  const [job, setJob] = useState("");
+  const [decription, setdescription] = useState("");
+  const [quantity, setQuantity] = useState("");
+
 
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -82,6 +87,22 @@ const Contacts = () => {
   const handleItemChange = (event) => {
     const newItem = parseFloat(event.target.value) || 0;
     setICode(newItem);
+  };
+  const handleHsnChange = (event) => {
+    const newHsn = parseFloat(event.target.value) || 0;
+    setHsn(newHsn);
+  };
+  const handleJobChange = (event) => {
+    const newJob = (event.target.value) || "";
+    setJob(newJob);
+  };
+  const handleDescriptionChange = (event) => {
+    const newdesc = (event.target.value) || "";
+    setdescription(newdesc);
+  };
+  const handleQuantityChange = (event) => {
+    const newQuan = parseFloat(event.target.value) || 0;
+    setQuantity(newQuan);
   };
   const handleDiscountPercentageChange = (event) => {
     const newDiscountPercentage = parseFloat(event.target.value) || 0;
@@ -130,10 +151,10 @@ const Contacts = () => {
   };
   const contactsColumns = [
     { field: "id", headerName: "Item Code", flex: 0.7, renderCell: (params) => <TextField variant="standard" value={icode} onChange={handleItemChange} /> },
-    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(e) => handleCellChange(params.id, 'registrarId', e.target.value)} /> },
-    { field: "name", headerName: "Job work Sac", flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.name} onChange={(e) => handleCellChange(params.id, 'name', e.target.value)} /> },
-    { field: "desc", headerName: "Description", flex: 2.5, renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(e) => handleCellChange(params.id, 'desc', e.target.value)} /> },
-    { field: "quan", headerName: "Quantity", flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.quan} onChange={(e) => handleCellChange(params.id, 'quan', e.target.value)} /> },
+    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={hsn} onChange={handleHsnChange}/> },
+    { field: "name", headerName: "Job work Sac", flex: 1, renderCell: (params) => <TextField variant="standard" value={job} onChange={handleJobChange} /> },
+    { field: "desc", headerName: "Description", flex: 2.5, renderCell: (params) => <TextField fullWidth variant="standard" value={decription} onChange={handleDescriptionChange} /> },
+    { field: "quan", headerName: "Quantity", flex: 1, renderCell: (params) => <TextField variant="standard" value={quantity} onChange={handleQuantityChange} /> },
     { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField variant="standard" value={rate} onChange={handleRateChange} /> },
     { field: 'discountPercentage', headerName: 'Discount %', renderCell: (params) => <TextField variant="standard" value={discountPercentage} onChange={handleDiscountPercentageChange} /> },
     { 
@@ -187,6 +208,11 @@ const Contacts = () => {
           },
         }}
       >
+        {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2 }}> */}
+        <Button variant="contained" color="primary" onClick={handleAddRow} >
+          Add New Row
+        </Button>
+      {/* </Box> */}
         <DataGrid
           rows={rows}
           columns={contactsColumns}

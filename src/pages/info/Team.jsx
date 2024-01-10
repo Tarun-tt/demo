@@ -1,6 +1,5 @@
 import { Autocomplete, Box, Checkbox, FormControlLabel, FormGroup, Paper, TextField, Typography, useTheme, Tab, Tabs, Grid, Button } from "@mui/material";
 import { tokens } from "../../styles/theme";
-import Header from "../../components/Header";
 import { useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -22,7 +21,26 @@ const Team = () => {
         console.log(tabIndex);
         setCurrentTabIndex(tabIndex);
     };
-
+    const [poDate, sePotDate] = useState(null);
+    const handlePoDateChange = (e) => {
+      const date = e.target.value;
+      sePotDate(date);
+    };
+    const [effDate, setEffDate] = useState(null);
+    const handleEffDateChange = (e) => {
+      const date = e.target.value;
+      setEffDate(date);
+    };
+    const [amendDate, setAmendDate] = useState(null);
+    const handleAmendDateChange = (e) => {
+      const date = e.target.value;
+      setAmendDate(date);
+    };
+    const [endDate, setEndDate] = useState(null);
+    const handleEndDateChange = (e) => {
+      const date = e.target.value;
+      setEndDate(date);
+    };
     return (
         <Box m="20px">
 
@@ -177,13 +195,16 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={top100Films}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="   PO Date" />}
-                            />
+                        <TextField
+          label="PO Date"
+          fullWidth
+          type="date"
+          id="Po-date"
+          name="poDate"
+          value={poDate ? poDate : "0"}
+          onChange={handlePoDateChange}
+          sx={{ width: 300 }}
+        />
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -202,13 +223,16 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={top100Films}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="PO Amend Date" />}
-                            />
+                            
+                        <TextField
+          label="PO Amend. Date"
+          fullWidth
+          type="date"
+          name="amendDate"
+          value={amendDate ? amendDate : "0"}
+          onChange={handleAmendDateChange}
+          sx={{ width: 300 }}
+        />
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -227,13 +251,15 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={top100Films}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="   PO Eff. Date " />}
-                            />
+                        <TextField
+          label="PO Eff. Date"
+          fullWidth
+          type="date"
+          name="effDate"
+          value={effDate ? effDate : "0"}
+          onChange={handleEffDateChange}
+          sx={{ width: 300 }}
+        />
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -252,13 +278,16 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={top100Films}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label=" PO End Date" />}
-                            />
+                           
+                        <TextField
+          label="PO End Date"
+          fullWidth
+          type="date"
+          name="endDate"
+          value={endDate ? endDate : "0"}
+          onChange={handleEndDateChange}
+          sx={{ width: 300 }}
+        />
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography

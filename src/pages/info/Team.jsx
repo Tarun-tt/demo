@@ -274,7 +274,7 @@ const Team = () => {
 
             {/* <Header title="Main" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
 
-            <Tabs value={currentTabIndex} onChange={handleTabChange}>
+            <Tabs value={currentTabIndex} onChange={handleTabChange} component={Paper} sx={{display:"flex", alignItems:"center"}}>
                 <Tab style={{ fontWeight: "900" }} label='Main' />
                 <Tab style={{ fontWeight: "900" }} label='Item' />
 

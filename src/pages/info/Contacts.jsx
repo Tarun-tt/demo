@@ -1,34 +1,36 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, Grid, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
+import {  Button, Checkbox, FormControlLabel, FormGroup, Grid, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
 import { useState } from "react";
 // import Header from "../../components/Header";
-
 const mockDataContacts =[{
   id: 1,
+  item: "",
   name: "",
   rate: "",
   desc: "",
   quan: "",
   discountPercentage: "",
   discountAmount: "",
-  isActive: "",
+  isActive: true,
   registrarId:"",
 },
 {
   id: 2,
+  item: "",
   name: "",
   rate: "",
   desc: "",
   quan: "",
   discountPercentage: "",
   discountAmount: "",
-  isActive: "",
+  isActive: false,
   registrarId:"",
 },
 {
   id: 3,
+  item: "",
   name: "",
   rate: "",
   desc: "",
@@ -39,7 +41,8 @@ const mockDataContacts =[{
   registrarId:"",
 },
 {
-  id: "",
+  id: 4,
+  item: "",
   name: "",
   rate: "",
   desc: "",
@@ -50,7 +53,8 @@ const mockDataContacts =[{
   registrarId:"",
 },
 {
-  id: "",
+  id: 5,
+  item: "",
   name: "",
   rate: "",
   desc: "",
@@ -68,75 +72,104 @@ const Contacts = () => {
   const [visibleRows, setVisibleRows] = useState(5);
   const [rows, setRows] = useState([...mockDataContacts.slice(0, visibleRows)]);
   const [rate, setRate] = useState(0);
-  const [icode, setICode] = useState(0);
+  
+  const [icode, setICode] = useState("");
   const [hsn, setHsn] = useState("");
   const [job, setJob] = useState("");
   const [decription, setdescription] = useState("");
   const [quantity, setQuantity] = useState("");
-
-
+  const [idCounter, setIdCounter] = useState(mockDataContacts.length + 1);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isActive, setIsActive] = useState(false);
-
-  const handleRateChange = (event) => {
+  const handleRateChange = (event, id) => {
     const newRate = parseFloat(event.target.value) || 0;
     setRate(newRate);
-    recalculateDiscountAmount(newRate, discountPercentage);
+    recalculateDiscountAmount(newRate, discountPercentage, id);
   };
-  const handleItemChange = (event) => {
+  const handleItemChange = (event, id) => {
     const newItem = parseFloat(event.target.value) || 0;
     setICode(newItem);
-  };
-  const handleHsnChange = (event) => {
-    const newHsn = parseFloat(event.target.value) || 0;
-    setHsn(newHsn);
-  };
-  const handleJobChange = (event) => {
-    const newJob = (event.target.value) || "";
-    setJob(newJob);
-  };
-  const handleDescriptionChange = (event) => {
-    const newdesc = (event.target.value) || "";
-    setdescription(newdesc);
-  };
-  const handleQuantityChange = (event) => {
-    const newQuan = parseFloat(event.target.value) || 0;
-    setQuantity(newQuan);
-  };
-  const handleDiscountPercentageChange = (event) => {
-    const newDiscountPercentage = parseFloat(event.target.value) || 0;
-    setDiscountPercentage(newDiscountPercentage);
-    recalculateDiscountAmount(rate, newDiscountPercentage);
-  };
-
-  const recalculateDiscountAmount = (newRate, newDiscountPercentage) => {
-    const newDiscountAmount = (newRate * newDiscountPercentage) / 100;
-    setDiscountAmount(newDiscountAmount);
-  };
-
-  const handleActiveChange = (event) => {
-    setIsActive(event.target.checked);
+    handleCellChange(id, "item", newItem);
   };
   
+  const handleHsnChange = (event,id) => {
+    const newHsn = parseFloat(event.target.value) || 0;
+    setHsn(newHsn);
+    handleCellChange(id, "registrarId", newHsn);
+  };
+  const handleJobChange = (event,id) => {
+    const newJob = (event.target.value) || "";
+    // setJob(newJob);
+    handleCellChange(id, "name", newJob);
+
+  };
+  const handleDescriptionChange = (event, id) => {
+    const newDesc = event.target.value;
+    handleCellChange(id, "desc", newDesc);
+  };
+  const handleQuantityChange = (event,id) => {
+    const newQuan = parseFloat(event.target.value) || 0;
+    setQuantity(newQuan);
+    handleCellChange(id, "quan", newQuan);
+
+  };
+  const handleDiscountPercentageChange = (event, id) => {
+    const newDiscountPercentage = parseFloat(event.target.value) || 0;
+    if (newDiscountPercentage >= 0 && newDiscountPercentage <= 99) {
+      setDiscountPercentage(newDiscountPercentage);
+      recalculateDiscountAmount(rate, newDiscountPercentage, id);
+    } else {
+      console.log("Discount percentage must be between 1 and 99");
+    }
+  };
+  
+  const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
+    const newDiscountAmount = (newRate * newDiscountPercentage) / 100;
+
+    setDiscountAmount(newDiscountAmount);
+
+    handleCellChange(id, 'rate', newRate);
+    handleCellChange(id, 'discountPercentage', newDiscountPercentage);
+    handleCellChange(id, 'discountAmount', newDiscountAmount);
+  };
+
+  const handleActiveChange = (event, id) => {
+    const isChecked = event.target.checked;
+  
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row) => {
+        if (row.id === id) {
+          return { ...row, isActive: isChecked };
+        }
+        return row;
+      });
+  
+      return updatedRows;
+    });
+  };
+  
+  // Add this state variable
+
   const handleCellChange = (id, field, value) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
       const rowIndex = updatedRows.findIndex((row) => row.id === id);
-      
+
       if (rowIndex !== -1) {
         updatedRows[rowIndex] = {
           ...updatedRows[rowIndex],
           [field]: value,
         };
       }
-  
+
       return updatedRows;
     });
   };
-  const handleAddRow = () => {
-    const newRow = {
-      id: "",
+  const createNewRow = () => {
+    return {
+      id: idCounter,
+      item: "",
       name: "",
       rate: "",
       desc: "",
@@ -146,34 +179,43 @@ const Contacts = () => {
       isActive: false,
       registrarId: "",
     };
+  };
+  const handleAddRow = () => {
+    const newRow = createNewRow();
     setRows((prevRows) => [...prevRows, newRow]);
     setVisibleRows((prevVisibleRows) => prevVisibleRows + 1);
+    setIdCounter((prevIdCounter) => prevIdCounter + 1);
   };
   const contactsColumns = [
-    { field: "id", headerName: "Item Code", flex: 0.7, renderCell: (params) => <TextField variant="standard" value={icode} onChange={handleItemChange} /> },
-    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={hsn} onChange={handleHsnChange}/> },
-    { field: "name", headerName: "Job work Sac", flex: 1, renderCell: (params) => <TextField variant="standard" value={job} onChange={handleJobChange} /> },
-    { field: "desc", headerName: "Description", flex: 2.5, renderCell: (params) => <TextField fullWidth variant="standard" value={decription} onChange={handleDescriptionChange} /> },
-    { field: "quan", headerName: "Quantity", flex: 1, renderCell: (params) => <TextField variant="standard" value={quantity} onChange={handleQuantityChange} /> },
-    { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField variant="standard" value={rate} onChange={handleRateChange} /> },
-    { field: 'discountPercentage', headerName: 'Discount %', renderCell: (params) => <TextField variant="standard" value={discountPercentage} onChange={handleDiscountPercentageChange} /> },
-    { 
-      field: 'discountAmount', 
-      headerName: 'Discount Amount', 
-      flex: 1, 
-      value: discountAmount,  // This should be calculated based on rate and discountPercentage
-      renderCell: (params) => <TextField variant="standard" value={discountAmount} disabled />, // Display the calculated value
-    },
-    { 
-      field: 'isActive', 
-      headerName: 'Active', 
-      flex: 0.3, 
-      renderCell: (params) => <Checkbox checked={isActive} onChange={handleActiveChange} />, 
-    },
+    
+    { field: "item", headerName: "Item Code",   type: 'number', flex: 0.7,editable: true , renderCell: (params) => <TextField variant="standard"  value={params.row.item}  onChange={(event) => handleItemChange(event, params.row.id)}  /> },
+    { field: "registrarId", headerName: "HSN/SAC Code",   type: 'number',editable: true , renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)}/> },
+    { field: "name", headerName: "Job work Sac", flex: 1,editable: true , renderCell: (params) => <TextField variant="standard" value={params.row.name}  onChange={(event) => handleJobChange(event, params.row.id)} /> },
+    { field: "desc", headerName: "Description", flex: 2.5,editable: true ,renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
+    { field: "quan", headerName: "Quantity", flex: 1,   type: 'number',editable: true , renderCell: (params) => <TextField variant="standard" value={quantity}  onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
+    { field: 'rate', headerName: 'Rate', flex: 1,renderCell: (params) => <TextField variant="standard" value={params.row.rate}  onChange={(event) => handleRateChange(event, params.row.id)} /> },
+    { field: 'discountPercentage', headerName: 'Discount %',   type: 'number' , renderCell: (params) => <TextField variant="standard" value={params.row.discountPercentage}         onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
+    { field: 'discountAmount',   headerName: 'Discount Amount', flex: 1, value: discountAmount, renderCell: (params) => <TextField variant="standard"      value={params.row.discountAmount} disabled />, },
+    { field: 'isActive', headerName: 'Active',  flex: 0.3, renderCell: (params) => <Checkbox  checked={params.row.isActive} onChange={(event) => handleActiveChange(event, params.row.id)} />, },
   ];
+
+  const [rateUnit, setRateUnit] = useState(1.000);
+  const [rateUnitError, setRateUnitError] = useState(false);
+
+  const handleRateUnitChange = (event) => {
+    const value = parseFloat(event.target.value);
+    setRateUnit(value);
+
+    // Check if the value is less than 1.000
+    if (value < 1.000) {
+      setRateUnitError(true);
+    } else {
+      setRateUnitError(false);
+    }
+  };  
   return (
     <Box m="20px">
-{/* <Header title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
+{/* <eader title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
       <Box
         // m="40px 0 0 0"
         height={`${visibleRows * 50 + 150}px`} 
@@ -217,11 +259,13 @@ const Contacts = () => {
           rows={rows}
           columns={contactsColumns}
           components={{ Toolbar: GridToolbar }}
-          sx={{mb:2}}
+          
         />
 
       </Box>
       
+
+
       <Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "row", gap: 2, padding: 2 }} >
   
   <Typography
@@ -235,7 +279,7 @@ const Contacts = () => {
       mt:5,
     }}
   >
-    GST
+    GST:
   </Typography>
 
   <FormGroup component={Paper} sx={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 2 }}>
@@ -243,7 +287,7 @@ const Contacts = () => {
       aria-labelledby="demo-radio-buttons-group-label"
       defaultValue="female"
       name="radio-buttons-group"
-      sx={{ flexDirection: "row" }}
+      sx={{ flexDirection: "column" }}
     >
       <FormControlLabel value="female" control={<Radio />} label="%" />
       <FormControlLabel value="male" control={<Radio />} label="Value" />
@@ -421,7 +465,16 @@ const Contacts = () => {
       >
         Rate Unit
       </Typography>
-      <TextField id="outlined-basic" label="Rate Unit" variant="outlined" />
+      <TextField
+            id="outlined-basic"
+            label="Rate Unit"
+            variant="outlined"
+            type="number"
+            value={rateUnit.toFixed(3) || ""} 
+            onChange={handleRateUnitChange}
+            error={rateUnitError}
+            helperText={rateUnitError && 'Value must be greater than or equal to 1.000'}
+          />
     </Grid>
     <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
       <Typography
@@ -468,10 +521,18 @@ const Contacts = () => {
       
     }}
   >
-    Remarks
+    Remarks: 
   </Typography>
-  <TextField fullWidth id="outlined-basic" label="Remarks" variant="outlined" />
+  <TextField fullWidth id="outlined-basic" label="Remarks" variant="outlined" inputProps={{ maxLength: 4000 }}  />
 </Box>
+<Grid container spacing={2} my={5}>
+                            <Grid item xs={12} sm={6} align="right">
+                                <Button  variant="contained" style={{ fontSize: "15px" }} color="success" > Save </Button>
+                            </Grid>
+                            <Grid item xs={12} sm={6} align="left">
+                                <Button variant='outlined' style={{ fontSize: "15px" }} > Cancel</Button>
+                            </Grid>
+                        </Grid>
     </Box>
   );
 };

@@ -1,5 +1,5 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Button, Checkbox, TextField, useTheme } from "@mui/material";
+import { Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, Grid, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
 import { useState } from "react";
@@ -217,9 +217,261 @@ const Contacts = () => {
           rows={rows}
           columns={contactsColumns}
           components={{ Toolbar: GridToolbar }}
+          sx={{mb:2}}
         />
 
       </Box>
+      
+      <Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "row", gap: 2, padding: 2 }} >
+  
+  <Typography
+    variant="h4"
+    component="div"
+    sx={{
+      color: "black",
+      fontWeight: "bold",
+      mb: 2,
+      alignItems:"center",
+      mt:5,
+    }}
+  >
+    GST
+  </Typography>
+
+  <FormGroup component={Paper} sx={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 2 }}>
+    <RadioGroup
+      aria-labelledby="demo-radio-buttons-group-label"
+      defaultValue="female"
+      name="radio-buttons-group"
+      sx={{ flexDirection: "row" }}
+    >
+      <FormControlLabel value="female" control={<Radio />} label="%" />
+      <FormControlLabel value="male" control={<Radio />} label="Value" />
+    </RadioGroup>
+  </FormGroup>
+
+<Box sx={{width:"auto"}}>    
+  <Grid container spacing={2}  >
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex",mb:2}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        SGST
+      </Typography>
+      <TextField id="outlined-basic" label="SGST" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        UGST
+      </Typography>
+      <TextField id="outlined-basic" label="UGST" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        CGST
+      </Typography>
+      <TextField id="outlined-basic" label="CGST" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        IGST
+      </Typography>
+      <TextField id="outlined-basic" label="IGST" variant="outlined" />
+    </Grid>
+  </Grid>
+  <Grid container spacing={2} a>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        CESS
+      </Typography>
+      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+      CESS
+      </Typography>
+      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        CESS
+      </Typography>
+      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        CESS
+      </Typography>
+      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+    </Grid>
+    
+  </Grid>
+  </Box>
+</Box>
+<Box component={Paper}>
+<Typography
+    variant="h4"
+    component="div"
+    sx={{
+      color: "black",
+      fontWeight: "bold",
+      mb: 2,
+      alignItems:"center",
+      mt:5,
+    }}
+  >
+    Others
+  </Typography>
+  <Grid container spacing={2}  >
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex",mb:2}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        Packing
+      </Typography>
+      <TextField id="outlined-basic" label="Packing" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        Rate Unit
+      </Typography>
+      <TextField id="outlined-basic" label="Rate Unit" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        Fabrication Charges
+      </Typography>
+      <TextField id="outlined-basic" label="   Fabrication Charges" variant="outlined" />
+    </Grid>
+    <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          mb: 2,
+          mt: 2
+        }}
+      >
+        UOM
+      </Typography>
+      <TextField id="outlined-basic" label="UOM" variant="outlined" />
+    </Grid>
+  </Grid>
+</Box>
+<Box component={Paper} sx={{display:"flex",mt:3,p:2}}>
+<Typography
+    variant="h4"
+    component="div"
+    sx={{
+      color: "black",
+      fontWeight: "bold",
+      mb: 2,
+      alignItems:"center",
+      mt:2,
+      
+    }}
+  >
+    Remarks
+  </Typography>
+  <TextField fullWidth id="outlined-basic" label="Remarks" variant="outlined" />
+</Box>
     </Box>
   );
 };

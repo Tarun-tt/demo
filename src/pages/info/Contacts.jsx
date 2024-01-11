@@ -256,11 +256,13 @@ const Contacts = () => {
       <Typography
         variant="h5"
         component="div"
+        
         sx={{
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         SGST
@@ -275,7 +277,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         UGST
@@ -290,7 +293,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CGST
@@ -305,7 +309,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         IGST
@@ -322,7 +327,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -337,7 +343,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
       CESS
@@ -352,7 +359,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -367,7 +375,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -401,7 +410,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Packing
@@ -416,7 +426,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Rate Unit
@@ -431,7 +442,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Fabrication Charges
@@ -446,7 +458,8 @@ const Contacts = () => {
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         UOM
@@ -465,7 +478,7 @@ const Contacts = () => {
       mb: 2,
       alignItems:"center",
       mt:2,
-      
+      mr: 2
     }}
   >
     Remarks

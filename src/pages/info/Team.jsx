@@ -10,7 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SvgIcon from '@mui/material/SvgIcon';
-import { divisions, top100Films, category, vendors, currency, modeTransport, paymentTerm, vendorState, store  } from "../constants";
+import { divisions, top100Films, category, vendors, currency, modeTransport, paymentTerm, vendorState, store, priceBasis  } from "../constants";
 import dayjs from 'dayjs';
 import axios from 'axios';
 import {  toast } from 'react-toastify';
@@ -1100,7 +1100,7 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
+                                options={priceBasis}
                                 sx={{ width: 300 }}
                                 onChange={(e, value) => checkValidation('price_basis', value)}
                                 renderInput={(params) => <TextField

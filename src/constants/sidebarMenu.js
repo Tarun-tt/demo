@@ -15,7 +15,7 @@ export const sidebarMenu = [
     {
         title: 'MAIN',
         icon: PeopleOutlinedIcon,
-        path: '/main',
+        path: '/',
     },
     {
         title: 'ITEMS',

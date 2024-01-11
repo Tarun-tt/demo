@@ -7,7 +7,7 @@ import { useState } from "react";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SidebarMenuItem from "./SidebarMenuItem";
 import "react-pro-sidebar/dist/css/styles.css";
-
+import infogen from "../../infogen.jpeg";
 
 const SidebarMenu = () => {
 
@@ -59,11 +59,12 @@ const SidebarMenu = () => {
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  ml="15px"
+                  // ml="15px"
                 >
-                  <Typography variant="h3" color={colors.grey[100]}>
-                    Velocis
-                  </Typography>
+                  <img src={infogen} alt="infogen " style={{width:"100%"}}/>
+                  {/* <Typography variant="h3" color={colors.grey[100]}>
+                    INFOGEN
+                  </Typography> */}
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
                   </IconButton>

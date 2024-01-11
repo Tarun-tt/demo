@@ -15,18 +15,18 @@ export const sidebarMenu = [
     {
         title: 'MAIN',
         icon: PeopleOutlinedIcon,
-        path: '/team',
+        path: '/',
     },
     {
         title: 'ITEMS',
         icon: ContactsOutlinedIcon,
-        path: '/contacts',
+        path: '/items',
     },
-    {
-        title: 'MASTER',
-        icon: ReceiptOutlinedIcon,
-        path: '/invoices',
-    },
+    // {
+    //     title: 'MASTER',
+    //     icon: ReceiptOutlinedIcon,
+    //     path: '/invoices',
+    // },
     // {
     //     title: 'Inputs',
     //     tag: 'divider'

@@ -1,9 +1,10 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import {  Button, Checkbox, FormControlLabel, FormGroup, Grid, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
+import {  Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, Grid, IconButton, MenuItem, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
 import { useState } from "react";
 // import Header from "../../components/Header";
+import ClearIcon from '@mui/icons-material/Clear';
 const mockDataContacts =[{
   id: 1,
   item: "",
@@ -72,7 +73,6 @@ const Contacts = () => {
   const [visibleRows, setVisibleRows] = useState(5);
   const [rows, setRows] = useState([...mockDataContacts.slice(0, visibleRows)]);
   const [rate, setRate] = useState(0);
-  
   const [icode, setICode] = useState("");
   const [hsn, setHsn] = useState("");
   const [job, setJob] = useState("");
@@ -82,19 +82,42 @@ const Contacts = () => {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const [totalDiscountAmount, setTotalDiscountAmount] = useState(0);
+const [totalAmountWith18Percent, setTotalAmountWith18Percent] = useState(0);
+const itemsList = ["1R0010001", "1C0010001"];
+const [sgstValue, setSgstValue] = useState("");
+const [ugstValue, setUgstValue] = useState("");
+const [igstValue, setIgstValue] = useState("");
+
   const handleRateChange = (event, id) => {
     const newRate = parseFloat(event.target.value) || 0;
     setRate(newRate);
     recalculateDiscountAmount(newRate, discountPercentage, id);
   };
   const handleItemChange = (event, id) => {
-    const newItem = parseFloat(event.target.value) || 0;
+    const newItem = event.target.value;
     setICode(newItem);
+
+    if (newItem === "1R0010001") {
+      handleHsnChange({ target: { value: "87089900" } }, id);
+      handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id);
+      // Additional logic for SGST and UGST values based on the selected item
+      setSgstValue(9);
+      setUgstValue(9);
+      setIgstValue(""); // Clear IGST value
+    } else if (newItem === "1C0010001") {
+      handleJobChange({ target: { value: "40169390" } }, id);
+      handleDescriptionChange({ target: { value: "Washer" } }, id);
+      // Additional logic for IGST value based on the selected item
+      setIgstValue(18);
+      setSgstValue(""); // Clear SGST value
+      setUgstValue(""); // Clear UGST value
+    }
     handleCellChange(id, "item", newItem);
   };
-  
+
   const handleHsnChange = (event,id) => {
-    const newHsn = parseFloat(event.target.value) || 0;
+    const newHsn = (event.target.value) || 0;
     setHsn(newHsn);
     handleCellChange(id, "registrarId", newHsn);
   };
@@ -123,17 +146,35 @@ const Contacts = () => {
       console.log("Discount percentage must be between 1 and 99");
     }
   };
-  
+  const calculateTotalDiscountAmount = (rows) => {
+    return rows.reduce((total, row) => {
+      return total + (row.discountAmount || 0);
+    }, 0);
+  };
   const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
-    const newDiscountAmount = (newRate * newDiscountPercentage) / 100;
-
+    const newDiscountAmount = quantity * newRate * (1 - newDiscountPercentage / 100);
+  
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row) => {
+        if (row.id === id) {
+          return { ...row, rate: newRate, discountPercentage: newDiscountPercentage, discountAmount: newDiscountAmount };
+        }
+        return row;
+      });
     setDiscountAmount(newDiscountAmount);
 
     handleCellChange(id, 'rate', newRate);
     handleCellChange(id, 'discountPercentage', newDiscountPercentage);
     handleCellChange(id, 'discountAmount', newDiscountAmount);
-  };
+    
+    const updatedTotalDiscountAmount = calculateTotalDiscountAmount(updatedRows);
+    setTotalDiscountAmount(updatedTotalDiscountAmount);
+    const updatedTotalAmountWith18Percent = updatedTotalDiscountAmount * 1.18;
+    setTotalAmountWith18Percent(updatedTotalAmountWith18Percent);
 
+    return updatedRows;
+  });
+};
   const handleActiveChange = (event, id) => {
     const isChecked = event.target.checked;
   
@@ -149,8 +190,6 @@ const Contacts = () => {
     });
   };
   
-  // Add this state variable
-
   const handleCellChange = (id, field, value) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
@@ -186,19 +225,43 @@ const Contacts = () => {
     setVisibleRows((prevVisibleRows) => prevVisibleRows + 1);
     setIdCounter((prevIdCounter) => prevIdCounter + 1);
   };
+  
+  const handleDeleteRow = (id) => {
+    setRows((prevRows) => {
+      const updatedRows = prevRows.filter((row) => row.id !== id);
+      
+      const updatedTotalDiscountAmount = calculateTotalDiscountAmount(updatedRows);
+      setTotalDiscountAmount(updatedTotalDiscountAmount);
+      const updatedTotalAmountWith18Percent = updatedTotalDiscountAmount * 1.18;
+      setTotalAmountWith18Percent(updatedTotalAmountWith18Percent);
+  
+      return updatedRows;
+    });
+  };
+  
   const contactsColumns = [
     
-    { field: "item", headerName: "Item Code",   type: 'number', flex: 0.7,editable: true , renderCell: (params) => <TextField variant="standard"  value={params.row.item}  onChange={(event) => handleItemChange(event, params.row.id)}  /> },
-    { field: "registrarId", headerName: "HSN/SAC Code",   type: 'number',editable: true , renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)}/> },
+    { field: "item", headerName: "Item Code",   type: 'number',flex:1,   renderCell: (params) => ( <TextField fullWidth select variant="standard" value={params.row.item} onChange={(event) => handleItemChange(event, params.row.id)}> {itemsList.map((item) => ( <MenuItem key={item} value={item}>{item}</MenuItem>))} </TextField>  ),},  
+    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)}/> },
     { field: "name", headerName: "Job work Sac", flex: 1,editable: true , renderCell: (params) => <TextField variant="standard" value={params.row.name}  onChange={(event) => handleJobChange(event, params.row.id)} /> },
     { field: "desc", headerName: "Description", flex: 2.5,editable: true ,renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
-    { field: "quan", headerName: "Quantity", flex: 1,   type: 'number',editable: true , renderCell: (params) => <TextField variant="standard" value={quantity}  onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
+    { field: "quan", headerName: "Quantity", flex: 1,   type: 'number', renderCell: (params) => <TextField variant="standard" value={params.row.quan}  onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
     { field: 'rate', headerName: 'Rate', flex: 1,renderCell: (params) => <TextField variant="standard" value={params.row.rate}  onChange={(event) => handleRateChange(event, params.row.id)} /> },
     { field: 'discountPercentage', headerName: 'Discount %',   type: 'number' , renderCell: (params) => <TextField variant="standard" value={params.row.discountPercentage}         onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
     { field: 'discountAmount',   headerName: 'Discount Amount', flex: 1, value: discountAmount, renderCell: (params) => <TextField variant="standard"      value={params.row.discountAmount} disabled />, },
-    { field: 'isActive', headerName: 'Active',  flex: 0.3, renderCell: (params) => <Checkbox  checked={params.row.isActive} onChange={(event) => handleActiveChange(event, params.row.id)} />, },
+    { field: 'isActive', headerName: 'Acton',  flex: 1,  renderCell: (params) => (
+      <Box style={{ display: 'flex', alignItems: 'center' }}>
+        <Checkbox
+          checked={params.row.isActive}
+          onChange={(event) => handleActiveChange(event, params.row.id)}
+        />
+        <IconButton onClick={() => handleDeleteRow(params.row.id)}>
+          <ClearIcon />
+        </IconButton>
+      </Box>
+    ),
+  },
   ];
-
   const [rateUnit, setRateUnit] = useState(1.000);
   const [rateUnitError, setRateUnitError] = useState(false);
 
@@ -263,8 +326,16 @@ const Contacts = () => {
         />
 
       </Box>
-      
+      <Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "row",  gap: 5, padding: 2 }} >
+  <Typography variant="h6"    sx={{color: "black",fontWeight: "bold",}}>
+    Total Discount Amount: {totalDiscountAmount.toFixed(2)}
+  </Typography>
+  <Typography variant="h6" sx={{color: "black",fontWeight: "bold",}}>
+    Total Amount with GST: {totalAmountWith18Percent.toFixed(2)}
+  </Typography>
+</Box>
 
+<Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "column", gap: 2, padding: 2 }} >
 
       <Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "row", gap: 2, padding: 2 }} >
   
@@ -309,7 +380,7 @@ const Contacts = () => {
       >
         SGST
       </Typography>
-      <TextField id="outlined-basic" label="SGST" variant="outlined" />
+      <TextField id="outlined-basic" label="SGST" variant="outlined"  value={sgstValue} disabled />
     </Grid>
     <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
       <Typography
@@ -324,7 +395,7 @@ const Contacts = () => {
       >
         UGST
       </Typography>
-      <TextField id="outlined-basic" label="UGST" variant="outlined" />
+      <TextField id="outlined-basic" label="UGST" variant="outlined" value={ugstValue} disabled />
     </Grid>
     <Grid item xs={12} sm={6} md={3} sx={{display:"flex"}}>
       <Typography
@@ -339,7 +410,7 @@ const Contacts = () => {
       >
         CGST
       </Typography>
-      <TextField id="outlined-basic" label="CGST" variant="outlined" />
+      <TextField id="outlined-basic" label="CGST" variant="outlined" disabled/>
     </Grid>
     <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
       <Typography
@@ -354,8 +425,11 @@ const Contacts = () => {
       >
         IGST
       </Typography>
-      <TextField id="outlined-basic" label="IGST" variant="outlined" />
+      <TextField id="outlined-basic" label="IGST" variant="outlined" value={igstValue} disabled/>
     </Grid>
+
+
+
   </Grid>
   <Grid container spacing={2} a>
     <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
@@ -371,7 +445,7 @@ const Contacts = () => {
       >
         CESS
       </Typography>
-      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+      <TextField id="outlined-basic" label="CESS" variant="outlined" disabled/>
     </Grid>
     <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
       <Typography
@@ -386,7 +460,7 @@ const Contacts = () => {
       >
       CESS
       </Typography>
-      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+      <TextField id="outlined-basic" label="CESS" variant="outlined" disabled/>
     </Grid>
     <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
       <Typography
@@ -401,7 +475,7 @@ const Contacts = () => {
       >
         CESS
       </Typography>
-      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+      <TextField id="outlined-basic" label="CESS" variant="outlined" disabled/>
     </Grid>
     <Grid item xs={12} sm={6}  md={3} sx={{display:"flex"}}>
       <Typography
@@ -416,13 +490,13 @@ const Contacts = () => {
       >
         CESS
       </Typography>
-      <TextField id="outlined-basic" label="CESS" variant="outlined" />
+      <TextField id="outlined-basic" label="CESS" variant="outlined" disabled/>
     </Grid>
     
   </Grid>
   </Box>
 </Box>
-<Box component={Paper}>
+<Box component={Paper} sx={{ mt: 3 , display:"flex",flexDirection: "row", gap: 2, padding: 2 }} >
 <Typography
     variant="h4"
     component="div"
@@ -431,10 +505,10 @@ const Contacts = () => {
       fontWeight: "bold",
       mb: 2,
       alignItems:"center",
-      mt:5,
+      mt:2,
     }}
   >
-    Others
+    Others:
   </Typography>
   <Grid container spacing={2}  >
     <Grid item xs={12} sm={6} md={3} sx={{display:"flex",mb:2}}>
@@ -533,6 +607,7 @@ const Contacts = () => {
                                 <Button variant='outlined' style={{ fontSize: "15px" }} > Cancel</Button>
                             </Grid>
                         </Grid>
+    </Box>
     </Box>
   );
 };

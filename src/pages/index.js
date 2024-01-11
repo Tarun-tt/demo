@@ -3,6 +3,7 @@ export { default as Topbar } from './global/Topbar';
 
 export { default as Contacts } from './info/Contacts';
 export { default as Team } from './info/Team';
+export { default as View } from './info/View';
 
 
 

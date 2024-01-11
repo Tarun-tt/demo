@@ -22,6 +22,11 @@ export const sidebarMenu = [
         icon: ContactsOutlinedIcon,
         path: '/items',
     },
+    {
+        title: 'DEATAIL',
+        icon: ReceiptOutlinedIcon,
+        path: '/view',
+    },
     // {
     //     title: 'MASTER',
     //     icon: ReceiptOutlinedIcon,

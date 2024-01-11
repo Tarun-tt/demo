@@ -1,4 +1,4 @@
-import {  Contacts,  SidebarMenu, Team,  } from './pages';
+import {  Contacts,  SidebarMenu, Team, View,  } from './pages';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material'; // reset all default css
 import { ColorModeContext, useMode } from './styles/theme';
@@ -24,8 +24,10 @@ const App = () => {
 
               <Routes>
 
+          
                 <Route path="/" element={<Team />} />
-                <Route path="/items" element={<Contacts />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/view" element={<View />} />
               
               </Routes>
 

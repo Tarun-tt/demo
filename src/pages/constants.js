@@ -33,6 +33,11 @@ const store = [
     {label:'MAIN STORE',description:"MAIN STORE",wc_id:2,id:2},
     
 ];
+const priceBasis = [
+    {lable:"10",id:1},
+    {lable:"20",id:2},
+    {lable:"30",id:3}
+];
 const modeTransport = [
     {label:'50',id:1,description: "BY ROAD"},
     {label:'51',id:2,description: "BY AIR"},
@@ -45,4 +50,4 @@ const top100Films = [
     { label: 'Data 3', year: 2008 },
 ];
 
-export  {divisions,top100Films,category,vendors,currency,modeTransport,paymentTerm,vendorState,store};
+export  {divisions,top100Films,category,vendors,currency,modeTransport,paymentTerm,vendorState,store,priceBasis};

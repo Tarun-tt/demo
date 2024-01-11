@@ -371,11 +371,13 @@ const [igstValue, setIgstValue] = useState("");
       <Typography
         variant="h5"
         component="div"
+        
         sx={{
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         SGST
@@ -390,7 +392,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         UGST
@@ -405,7 +408,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CGST
@@ -420,7 +424,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         IGST
@@ -440,7 +445,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -455,7 +461,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
       CESS
@@ -470,7 +477,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -485,7 +493,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr:2
         }}
       >
         CESS
@@ -519,7 +528,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Packing
@@ -534,7 +544,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Rate Unit
@@ -558,7 +569,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         Fabrication Charges
@@ -573,7 +585,8 @@ const [igstValue, setIgstValue] = useState("");
           color: "black",
           fontWeight: "bold",
           mb: 2,
-          mt: 2
+          mt: 2,
+          mr: 2
         }}
       >
         UOM
@@ -592,7 +605,7 @@ const [igstValue, setIgstValue] = useState("");
       mb: 2,
       alignItems:"center",
       mt:2,
-      
+      mr: 2
     }}
   >
     Remarks: 

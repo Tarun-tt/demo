@@ -23,7 +23,7 @@ export const sidebarMenu = [
         path: '/items',
     },
     {
-        title: 'DEATAIL',
+        title: 'DETAIL',
         icon: ReceiptOutlinedIcon,
         path: '/view',
     },

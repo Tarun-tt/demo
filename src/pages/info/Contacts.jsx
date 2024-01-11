@@ -88,6 +88,31 @@ const itemsList = ["1R0010001", "1C0010001"];
 const [sgstValue, setSgstValue] = useState("");
 const [ugstValue, setUgstValue] = useState("");
 const [igstValue, setIgstValue] = useState("");
+const handleFormSubmit = () => {
+  const formDataArray = [];
+
+  rows.forEach((row) => {
+    const rowData = {
+      id: row.id || '',
+      item: row.item || '',
+      registrarId: row.registrarId || '',
+      name: row.name || '',
+      desc: row.desc || '',
+      quan: row.quan || '',
+      rate: row.rate || '',
+      discountPercentage: row.discountPercentage || '',
+      discountAmount: row.discountAmount || '',
+      isActive: row.isActive || '',
+    };
+
+    formDataArray.push(rowData);
+  });
+
+  console.log('formDataArray:', formDataArray);
+};
+
+
+
 
   const handleRateChange = (event, id) => {
     const newRate = parseFloat(event.target.value) || 0;
@@ -241,16 +266,16 @@ const [igstValue, setIgstValue] = useState("");
   
   const contactsColumns = [
     
-    { field: "item", headerName: "Item Code",   type: 'number',flex:1,   renderCell: (params) => ( <TextField fullWidth select variant="standard" value={params.row.item} onChange={(event) => handleItemChange(event, params.row.id)}> {itemsList.map((item) => ( <MenuItem key={item} value={item}>{item}</MenuItem>))} </TextField>  ),},  
-    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)}/> },
-    { field: "name", headerName: "Job work Sac", flex: 1,editable: true , renderCell: (params) => <TextField variant="standard" value={params.row.name}  onChange={(event) => handleJobChange(event, params.row.id)} /> },
-    { field: "desc", headerName: "Description", flex: 2.5,editable: true ,renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
-    { field: "quan", headerName: "Quantity", flex: 1,   type: 'number', renderCell: (params) => <TextField variant="standard" value={params.row.quan}  onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
-    { field: 'rate', headerName: 'Rate', flex: 1,renderCell: (params) => <TextField variant="standard" value={params.row.rate}  onChange={(event) => handleRateChange(event, params.row.id)} /> },
-    { field: 'discountPercentage', headerName: 'Discount %',   type: 'number' , renderCell: (params) => <TextField variant="standard" value={params.row.discountPercentage}         onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
-    { field: 'discountAmount',   headerName: 'Discount Amount', flex: 1, value: discountAmount, renderCell: (params) => <TextField variant="standard"      value={params.row.discountAmount} disabled />, },
+    { field: "item", headerName: "Item Code",   type: 'number',flex:1,   renderCell: (params) => ( <TextField fullWidth select variant="standard" name="item" value={params.row.item} onChange={(event) => handleItemChange(event, params.row.id)}> {itemsList.map((item) => ( <MenuItem key={item} value={item}>{item}</MenuItem>))} </TextField>  ),},  
+    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" name="registrarId" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)}/> },
+    { field: "name", headerName: "Job work Sac", flex: 1,editable: true , renderCell: (params) => <TextField variant="standard" name="name" value={params.row.name}  onChange={(event) => handleJobChange(event, params.row.id)} /> },
+    { field: "desc", headerName: "Description", flex: 2.5,editable: true ,renderCell: (params) => <TextField fullWidth variant="standard" name="desc" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
+    { field: "quan", headerName: "Quantity", flex: 1,   type: 'number', renderCell: (params) => <TextField variant="standard" name="rate" value={params.row.quan}  onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
+    { field: 'rate', headerName: 'Rate', flex: 1,renderCell: (params) => <TextField variant="standard" name="discountPercentage" value={params.row.rate}  onChange={(event) => handleRateChange(event, params.row.id)} /> },
+    { field: 'discountPercentage', headerName: 'Discount %',   type: 'number' , renderCell: (params) => <TextField variant="standard" name="item" value={params.row.discountPercentage}         onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
+    { field: 'discountAmount',   headerName: 'Discount Amount', flex: 1, value: discountAmount, renderCell: (params) => <TextField variant="standard"    name="discountAmount"  value={params.row.discountAmount} disabled />, },
     { field: 'isActive', headerName: 'Acton',  flex: 1,  renderCell: (params) => (
-      <Box style={{ display: 'flex', alignItems: 'center' }}>
+      <Box style={{ display: 'flex', alignItems: 'center' }} name="isActive">
         <Checkbox
           checked={params.row.isActive}
           onChange={(event) => handleActiveChange(event, params.row.id)}
@@ -276,6 +301,9 @@ const [igstValue, setIgstValue] = useState("");
       setRateUnitError(false);
     }
   };  
+
+
+
   return (
     <Box m="20px">
 {/* <eader title="UNIT 2" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
@@ -614,7 +642,7 @@ const [igstValue, setIgstValue] = useState("");
 </Box>
 <Grid container spacing={2} my={5}>
                             <Grid item xs={12} sm={6} align="right">
-                                <Button  variant="contained" style={{ fontSize: "15px" }} color="success" > Save </Button>
+                                <Button  variant="contained" style={{ fontSize: "15px" }} color="success" onClick={handleFormSubmit} > Save </Button>
                             </Grid>
                             <Grid item xs={12} sm={6} align="left">
                                 <Button variant='outlined' style={{ fontSize: "15px" }} > Cancel</Button>

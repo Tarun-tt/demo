@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Checkbox, FormControlLabel, FormGroup, Paper, TextField, Typography, useTheme, Tab, Tabs, Grid, Button } from "@mui/material";
 import { tokens } from "../../styles/theme";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { useForm } from 'react-hook-form';
@@ -9,12 +9,9 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-const top100Films = [
-    { label: 'Tarun1', year: 1994 },
-    { label: 'Data1', year: 1972 },
-    { label: 'Data Part II', year: 1974 },
-    { label: 'Data 3', year: 2008 },
-]
+import { divisions, top100Films, category, vendors, currency, modeTransport } from "../constants";
+import dayjs from 'dayjs';
+console.log(divisions);
 const Team = () => {
     const [date, setDate] = useState(new Date());
     const theme = useTheme();
@@ -31,13 +28,32 @@ const Team = () => {
     const [endDateError, setEndDateError] = useState("");
     const [effDateError, setEffDateError] = useState("");
     const [comboboxError, setComboboxError] = useState("");
+
+    const [vendorReNumError, setVendorReNumError] = useState("");
+
     const [currencyError, setCurrencyError] = useState("");
     const [currencyCError, setCurrencyCError] = useState("");
     const [paymentTError, setPaymentTError] = useState("");
     const [modeoftransportError, setModeoftransportError] = useState("");
     const [pricebasisError, setPricebasisError] = useState("");
+    const [vendorEvent, setVendorEvent] = useState("");
+    const [selectedValue, setSelectedValue] = useState("onetimepo");
+    const [modeOfTransportDesc, setModeOfTransportDesc] = useState("");
 
+    
+    const handleChange = (event) => {
+        setSelectedValue(event.target.value);
+    };
+    var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
 
+        today = mm + '/' + dd + '/' + yyyy;
+       // document.write(today);
+    const [currentDate, setCurrentDate] = useState(today);
+    
+    const [ponum, setPoNum] = useState("");
     const [poDateError, setPoDateError] = useState("");
     const { register, handleSubmit, reset } = useForm();
     const handleTabChange = (e, tabIndex) => {
@@ -45,28 +61,33 @@ const Team = () => {
         setCurrentTabIndex(tabIndex);
     };
     const [poDate, sePotDate] = useState(null);
-    const handlePoDateChange = (e) => {
+    const handlePoDateChange = (e,value) => {
         console.log(e.target.value)
         const date = e.target.value;
         sePotDate(date);
         setPoDateError('');
     };
+    console.log(currentDate)
     const [effDate, setEffDate] = useState(null);
-    const handleEffDateChange = (e) => {
+    useEffect(()=>{
+        setCurrentDate(today);
+    },[])
+    const handleEffDateChange = (e,value) => {
         const date = e.target.value;
         setEffDate(date);
     };
     const [amendDate, setAmendDate] = useState(null);
-    const handleAmendDateChange = (e) => {
+    const handleAmendDateChange = (e,value) => {
         const date = e.target.value;
         setAmendDate(date);
     };
     const [endDate, setEndDate] = useState(null);
-    const handleEndDateChange = (e) => {
+    const handleEndDateChange = (e,value) => {
         const date = e.target.value;
         setEndDate(date);
     };
     const handleFormSubmit = async (formData) => {
+       
         let formDirty = false;
         // formData['storyStatus'] = 'TO_DO';
         // formData['isActive'] = 1;
@@ -84,12 +105,12 @@ const Team = () => {
         } else {
             setCategoryError('');
         }
-        if (formData.ponumber.length == 0) {
-            setPonumberError('Po Number is required');
-            formDirty = true
-        } else {
-            setPonumberError('');
-        }
+        // if (formData.ponumber.length == 0) {
+        //     setPonumberError('Po Number is required');
+        //     formDirty = true
+        // } else {
+        //     setPonumberError('');
+        // }
         if (formData.store.length == 0) {
             setStoreError('Store is required');
             formDirty = true
@@ -145,11 +166,11 @@ const Team = () => {
         } else {
             setVendorError('');
         }
-        if (formData.combobox.length == 0) {
-            setComboboxError('Combo box is required');
+        if (formData.vendorReNum.length == 0) {
+            setVendorReNumError('Vendor Ref. is required');
             formDirty = true
         } else {
-            setComboboxError('');
+            setVendorReNumError('');
         }
         if (formData.currency.length == 0) {
             setCurrencyError('Currency box is required');
@@ -185,16 +206,22 @@ const Team = () => {
             reset();
             return false
         } else {
+            let ram = Math.floor(100000 + Math.random() * 900000);
+            setPoNum(ram)
+            setPonumberError("");
             //const response = await postAPI(apiEndpoints.registerBacklog, formData);
             // reset();
             //    return true;
+            formData["ponumber"] = ram;
+            formData["potype"] = selectedValue
+            console.log('form data is - ', formData);
         }
-        console.log('form data is - ', formData);
+        
         // reset();
 
     }
-    const checkValidation = (field, event) => {
-        let formData = event.target.value;
+    const checkValidation = (field, value) => {
+      //  let formData = event.target.value;
 
         if (field === 'division') {
             setDivisionError('');
@@ -205,9 +232,11 @@ const Team = () => {
         if (field === 'ponumber') {
             setPonumberError('');
         }
-        if (field === 'ponumber') {
-            setPonumberError('');
+        if (field === 'mode_of_transport') {console.log(value.description);
+            setModeOfTransportDesc(value.description);
         }
+        
+       
         if (field === 'store') {
             setStoreError('');
         }
@@ -236,10 +265,13 @@ const Team = () => {
             setEndDateError('');
         }
         if (field === 'vendor') {
+            
+            setVendorEvent(value?.label.split("/")[1]);
+            
             setVendorError('');
         }
-        if (field === 'combobox') {
-            setComboboxError('');
+        if (field === 'vendorReNum') {console.log("test");
+            setVendorReNumError('');
         }
         if (field === 'currency') {
             setCurrencyError('');
@@ -297,13 +329,16 @@ const Team = () => {
 
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
+                                defaultValue="onetimepo"
                                 name="radio-buttons-group"
+                                onChange={(e,value) => checkValidation('potype', value)}
+                                {...register('potype')}
                             >
-                                <FormControlLabel value="female" control={<Radio />} label="One Time PO" />
-                                <FormControlLabel value="male" control={<Radio />} label="Open PO" />
+                                <FormControlLabel value="onetimepo" checked={selectedValue === 'onetimepo'}  onChange={handleChange}  control={<Radio />} label="One Time PO" />
+                                <FormControlLabel value="openpo" checked={selectedValue === 'openpo'}  onChange={handleChange}  control={<Radio />} label="Open PO" />
 
                             </RadioGroup>
+                            
                         </FormGroup>
                     </Box>
                     <Grid container spacing={2}>
@@ -327,10 +362,9 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
+                                options={divisions}
                                 sx={{ width: 300 }}
-                                onChange={(e) => checkValidation('division', e)}
-
+                                onChange={(e,value) => checkValidation('division', value)}
                                 renderInput={(params) =>
                                     <TextField {...params}
 
@@ -360,8 +394,8 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e) => checkValidation('category', e)}
-                                options={top100Films}
+                                onChange={(e,value) => checkValidation('category', value)}
+                                options={category}
                                 sx={{ width: 300 }}
                                 renderInput={(params) =>
                                     <TextField {...params}
@@ -390,18 +424,16 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
+                            <TextField
                                 disablePortal
                                 id="combo-box-demo"
                                 options={top100Films}
-                                onChange={(e) => checkValidation('ponumber', e)}
+                               name="ponumber"
                                 sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params}
-
-                                    label="Po Number"
-                                    helperText={ponumberError}
-                                    error={ponumberError && ponumberError.length > 0 ? true : false}
-                                    {...register('ponumber')} />}
+                                label="PO Number"
+                                value={ponum}
+                                disabled
+                                {...register('ponumber')}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2}>
@@ -424,7 +456,7 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e) => checkValidation('store', e)}
+                                onChange={(e,value) => checkValidation('store', value)}
                                 options={top100Films}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params}
@@ -468,20 +500,25 @@ const Team = () => {
                                 {...register('poDate')}
                             /> */}
 
-                            <LocalizationProvider dateAdapter={AdapterDayjs}
+                            <LocalizationProvider  dateAdapter={AdapterDayjs}
                             >
                                 <DemoContainer components={['DatePicker']}
                                 >
-
+                                { currentDate ? 
                                     <DatePicker label="PO Date"
-                                        helperText={poDateError}
+                                        
                                         name="poDate"
+                                        disablePast  
+                                        defaultValue={dayjs(currentDate)}
+                                        helperText={poDateError}                                    
                                         error={poDateError && poDateError.length > 0 ? true : false}
                                         sx={{ width: 300 }}
                                         required
                                         onChange={(date) => setDate(date)}
                                         {...register('poDate')}
-                                    />
+                                    /> : ""
+                                }
+                                    
                                 </DemoContainer>
                             </LocalizationProvider>
 
@@ -521,6 +558,8 @@ const Team = () => {
                                     <DatePicker label="PO Amend. Date"
                                         helperText={amendDateError}
                                         name="amendDate"
+                                        disablePast  
+                                        defaultValue={dayjs(currentDate)}
                                         error={amendDateError && amendDateError.length > 0 ? true : false}
                                         sx={{ width: 300 }}
                                         required
@@ -564,6 +603,8 @@ const Team = () => {
 
                                     <DatePicker label="PO Eff. Date"
                                         helperText={amendDateError}
+                                        disablePast  
+                                        defaultValue={dayjs(currentDate)}
                                         name="effDate"
                                         error={effDateError && effDateError.length > 0 ? true : false}
                                         sx={{ width: 300 }}
@@ -634,14 +675,12 @@ const Team = () => {
                                 Vendor
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-
+                        <Grid item xs={12} sm={2}>
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
-                                onChange={(e) => checkValidation('vendor', e)}
-                                sx={{ width: 300 }}
+                                options={vendors}
+                                onChange={(e,value) => checkValidation('vendor', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Vendor"
@@ -652,6 +691,20 @@ const Team = () => {
                                 />}
                             />
                         </Grid>
+                        <Grid item xs={12} sm={7}>
+                        <TextField
+                                        
+                                        aria-readonly
+                                        autoComplete='given-name'
+                                        type='text'
+                                        fullWidth
+                                        id='storyStatus'                                        
+                                        value={vendorEvent}
+                                        autoFocus
+                                        {...register('vendorText')}
+                                    />
+                        </Grid>
+
                         <Grid item xs={12} sm={2}>
                             <Typography
                                 variant="h5"
@@ -668,11 +721,27 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-
-                            <Autocomplete
+                        <TextField
+                                        
+                                        aria-readonly
+                                        autoComplete='given-name'
+                                        type='text'
+                                        fullWidth
+                                        id='storyStatus' 
+                                        label="Vendor Ref No."                                       
+                                        name="vendorReNum"
+                                        sx={{ width: 300 }}
+                                        onKeyUp={(e,value) => checkValidation('vendorReNum', value)}
+                                        helperText={vendorReNumError}
+                                        error={vendorReNumError && vendorReNumError.length > 0 ? true : false}
+                                        {...register('vendorReNum')}
+                                        autoFocus
+                                       
+                                    />
+                            {/* <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e) => checkValidation('combobox', e)}
+                                onChange={(e,value) => checkValidation('combobox', e)}
                                 options={top100Films}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField
@@ -683,7 +752,7 @@ const Team = () => {
                                     error={comboboxError && comboboxError.length > 0 ? true : false}
                                     {...register('combobox')}
                                 />}
-                            />
+                            /> */}
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -705,9 +774,10 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
-                                onChange={(e) => checkValidation('currency', e)}
+                                options={currency}
+                                onChange={(e,value) => checkValidation('currency', value)}
                                 sx={{ width: 300 }}
+                                defaultValue="RUPPES"
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Currency"
@@ -739,7 +809,7 @@ const Team = () => {
                                 disablePortal
                                 id="combo-box-demo"
                                 options={top100Films}
-                                onChange={(e) => checkValidation('currencyConverter', e)}
+                                onChange={(e,value) => checkValidation('currencyConverter', value)}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField
                                     {...params}
@@ -757,11 +827,13 @@ const Team = () => {
                                 flexDirection: "row",
                                 alignItems: "center",
                                 mt: 2,
-                                right: 1
-                            }}>
-                                <FormControlLabel control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
-                                <FormControlLabel control={<Checkbox />} label="Quality Assured " />
-                                <FormControlLabel control={<Checkbox />} label="None" />
+                                right: 1                               
+                            }}
+                            {...register('type')}
+                            >
+                                <FormControlLabel value="PO Direct to OSP" control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
+                                <FormControlLabel value="Quality Assured" control={<Checkbox />} label="Quality Assured" />
+                                <FormControlLabel value="None" control={<Checkbox />} label="None" />
 
 
                             </FormGroup>
@@ -803,7 +875,7 @@ const Team = () => {
                                 id="combo-box-demo"
                                 options={top100Films}
                                 sx={{ width: 300 }}
-                                onChange={(e) => checkValidation('payment_terms', e)}
+                                onChange={(e,value) => checkValidation('payment_terms', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Payment Terms"
@@ -829,14 +901,14 @@ const Team = () => {
                                 Mode of Transport
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={2}>
 
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
-                                sx={{ width: 300 }}
-                                onChange={(e) => checkValidation('mode_of_transport', e)}
+                                options={modeTransport}
+                                sx={{ width: 140 }}
+                                onChange={(e,value) => checkValidation('mode_of_transport', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Mode of Transport"
@@ -845,8 +917,26 @@ const Team = () => {
                                     error={modeoftransportError && modeoftransportError.length > 0 ? true : false}
                                     {...register('mode_of_transport')}
                                 />}
-                            />
+                            />           
+                            
                         </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <TextField
+                                        disabled
+                                        aria-readonly
+                                        autoComplete='given-name'
+                                        type='text'
+                                        fullWidth
+                                        id='storyStatus' 
+                                        value={modeOfTransportDesc}                                       
+                                        name="mode_of_transport_desc"
+                                        sx={{ width: 150 }}
+                                        onKeyUp={(e,value) => checkValidation('mode_of_transport_desc', value)}                                        
+                                        {...register('mode_of_transport_desc')}
+                                        autoFocus
+                                       
+                                    />
+                            </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
                                 variant="h5"
@@ -869,7 +959,7 @@ const Team = () => {
                                 id="combo-box-demo"
                                 options={top100Films}
                                 sx={{ width: 300 }}
-                                onChange={(e) => checkValidation('price_basis', e)}
+                                onChange={(e,value) => checkValidation('price_basis', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Price Basis"

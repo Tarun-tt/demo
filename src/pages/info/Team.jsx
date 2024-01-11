@@ -9,9 +9,11 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { divisions, top100Films, category, vendors, currency, modeTransport } from "../constants";
+import SvgIcon from '@mui/material/SvgIcon';
+import { divisions, top100Films, category, vendors, currency, modeTransport, paymentTerm, vendorState, store  } from "../constants";
 import dayjs from 'dayjs';
-console.log(divisions);
+import axios from 'axios';
+import {  toast } from 'react-toastify';
 const Team = () => {
     const [date, setDate] = useState(new Date());
     const theme = useTheme();
@@ -39,20 +41,23 @@ const Team = () => {
     const [vendorEvent, setVendorEvent] = useState("");
     const [selectedValue, setSelectedValue] = useState("onetimepo");
     const [modeOfTransportDesc, setModeOfTransportDesc] = useState("");
+    const [paymentTerms, setPaymentTerms] = useState("");
+    const [vendorStateError, setVendorStateError] = useState("");
 
+    const [vendorAddressError, setVendorAddressError] = useState("");
     
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
     };
     var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
 
-        today = mm + '/' + dd + '/' + yyyy;
-       // document.write(today);
+    today = mm + '/' + dd + '/' + yyyy;
+    // document.write(today);
     const [currentDate, setCurrentDate] = useState(today);
-    
+
     const [ponum, setPoNum] = useState("");
     const [poDateError, setPoDateError] = useState("");
     const { register, handleSubmit, reset } = useForm();
@@ -61,7 +66,7 @@ const Team = () => {
         setCurrentTabIndex(tabIndex);
     };
     const [poDate, sePotDate] = useState(null);
-    const handlePoDateChange = (e,value) => {
+    const handlePoDateChange = (e, value) => {
         console.log(e.target.value)
         const date = e.target.value;
         sePotDate(date);
@@ -69,25 +74,25 @@ const Team = () => {
     };
     console.log(currentDate)
     const [effDate, setEffDate] = useState(null);
-    useEffect(()=>{
+    useEffect(() => {
         setCurrentDate(today);
-    },[])
-    const handleEffDateChange = (e,value) => {
+    }, [])
+    const handleEffDateChange = (e, value) => {
         const date = e.target.value;
         setEffDate(date);
     };
     const [amendDate, setAmendDate] = useState(null);
-    const handleAmendDateChange = (e,value) => {
+    const handleAmendDateChange = (e, value) => {
         const date = e.target.value;
         setAmendDate(date);
     };
     const [endDate, setEndDate] = useState(null);
-    const handleEndDateChange = (e,value) => {
+    const handleEndDateChange = (e, value) => {
         const date = e.target.value;
         setEndDate(date);
     };
     const handleFormSubmit = async (formData) => {
-       
+
         let formDirty = false;
         // formData['storyStatus'] = 'TO_DO';
         // formData['isActive'] = 1;
@@ -172,6 +177,19 @@ const Team = () => {
         } else {
             setVendorReNumError('');
         }
+        if (formData.vendorAddress.length == 0) {
+            setVendorAddressError('Vendor Address is required');
+            formDirty = true
+        } else {
+            setVendorAddressError('');
+        }
+        
+        if (formData.vendorState.length == 0) {
+            setVendorStateError('Vendor State is required');
+            formDirty = true
+        } else {
+            setVendorStateError('');
+        }
         if (formData.currency.length == 0) {
             setCurrencyError('Currency box is required');
             formDirty = true
@@ -179,14 +197,14 @@ const Team = () => {
             setCurrencyError('');
         }
 
-        if (formData.payment_terms.length == 0) {
-            setPaymentTError('Payment terms is required');
-            formDirty = true
-        } else {
-            setPaymentTError('');
-        }
+        // if (formData.payment_terms.length == 0) {
+        //     setPaymentTError('Payment terms is required');
+        //     formDirty = true
+        // } else {
+        //     setPaymentTError('');
+        // }
 
-        if (formData.mode_of_transport.length == 0) {
+        if (formData.mode_of_transport.length == 0) {console.log("jjjjj");
             setModeoftransportError('Mode of payment is required');
             formDirty = true
         } else {
@@ -213,15 +231,35 @@ const Team = () => {
             // reset();
             //    return true;
             formData["ponumber"] = ram;
-            formData["potype"] = selectedValue
+            formData["potype"] = selectedValue;
+            formData["mode_of_transport_desc"]= modeOfTransportDesc;
+            formData["payment_terms"]= paymentTerms;
+            formData["vendorText"] = vendorEvent?.description
             console.log('form data is - ', formData);
+            axios.post('http://localhost:8080/api/poc/add', formData)
+                .then(res=>{
+                 // const { navigate } = this.props
+                 
+                  console.log(res);
+                 
+                  
+                  toast.success("Added Successfully", {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
+                  
+                }).catch(error => { //console.log(history.push('/companyDetail'),"jjjjjjjj");
+                  console.log(error.response);
+                  toast.error(error.response, {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
+                });
         }
-        
+
         // reset();
 
     }
     const checkValidation = (field, value) => {
-      //  let formData = event.target.value;
+        //  let formData = event.target.value;
 
         if (field === 'division') {
             setDivisionError('');
@@ -232,11 +270,11 @@ const Team = () => {
         if (field === 'ponumber') {
             setPonumberError('');
         }
-        if (field === 'mode_of_transport') {console.log(value.description);
+        if (field === 'mode_of_transport') {
             setModeOfTransportDesc(value.description);
         }
-        
-       
+
+
         if (field === 'store') {
             setStoreError('');
         }
@@ -261,41 +299,54 @@ const Team = () => {
         if (field === 'endDate') {
             setEndDateError('');
         }
+        if (field === 'vendorState') {
+            setVendorStateError('');
+        }
+        
         if (field === 'endDate') {
             setEndDateError('');
         }
         if (field === 'vendor') {
-            
-            setVendorEvent(value?.label.split("/")[1]);
-            
+
+            const pterm = paymentTerm.filter((res) => {
+                if (res.id == value.payment_id) {
+                    return res.label;
+                }
+            })
+            console.log(pterm[0]);
+            setVendorEvent(value);
+            setPaymentTerms(pterm[0].label)
             setVendorError('');
         }
-        if (field === 'vendorReNum') {console.log("test");
+        if (field === 'vendorReNum') {
+            console.log("test");
             setVendorReNumError('');
         }
+        if (field === 'vendorAddress') {            
+            setVendorAddressError('');
+        }
+        
         if (field === 'currency') {
             setCurrencyError('');
         }
         if (field === 'currencyConverter') {
             setCurrencyCError('');
         }
+
+        if (field === 'payment_terms') {
+            setPaymentTError('');
+        }
+        if (field === 'payment_terms') {
+            setPaymentTError('');
+        }
+        if (field === 'mode_of_transport') {
+            setModeoftransportError('');
+        }
         
-        if (field === 'payment_terms') {
-            setPaymentTError('');
-        }
-        if (field === 'payment_terms') {
-            setPaymentTError('');
-        }
-        if (field === 'mode_of_transport') {
-            setModeoftransportError('');
-        }
-        if (field === 'mode_of_transport') {
-            setModeoftransportError('');
-        }
         if (field === 'price_basis') {
             setPricebasisError('');
         }
-        
+
 
         else {
             console.log('nothing')
@@ -331,14 +382,14 @@ const Team = () => {
                                 aria-labelledby="demo-radio-buttons-group-label"
                                 defaultValue="onetimepo"
                                 name="radio-buttons-group"
-                                onChange={(e,value) => checkValidation('potype', value)}
+                                onChange={(e, value) => checkValidation('potype', value)}
                                 {...register('potype')}
                             >
-                                <FormControlLabel value="onetimepo" checked={selectedValue === 'onetimepo'}  onChange={handleChange}  control={<Radio />} label="One Time PO" />
-                                <FormControlLabel value="openpo" checked={selectedValue === 'openpo'}  onChange={handleChange}  control={<Radio />} label="Open PO" />
+                                <FormControlLabel value="onetimepo" checked={selectedValue === 'onetimepo'} onChange={handleChange} control={<Radio />} label="One Time PO" />
+                                <FormControlLabel value="openpo" checked={selectedValue === 'openpo'} onChange={handleChange} control={<Radio />} label="Open PO" />
 
                             </RadioGroup>
-                            
+
                         </FormGroup>
                     </Box>
                     <Grid container spacing={2}>
@@ -364,7 +415,7 @@ const Team = () => {
                                 id="combo-box-demo"
                                 options={divisions}
                                 sx={{ width: 300 }}
-                                onChange={(e,value) => checkValidation('division', value)}
+                                onChange={(e, value) => checkValidation('division', value)}
                                 renderInput={(params) =>
                                     <TextField {...params}
 
@@ -394,7 +445,7 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e,value) => checkValidation('category', value)}
+                                onChange={(e, value) => checkValidation('category', value)}
                                 options={category}
                                 sx={{ width: 300 }}
                                 renderInput={(params) =>
@@ -428,7 +479,7 @@ const Team = () => {
                                 disablePortal
                                 id="combo-box-demo"
                                 options={top100Films}
-                               name="ponumber"
+                                name="ponumber"
                                 sx={{ width: 300 }}
                                 label="PO Number"
                                 value={ponum}
@@ -456,8 +507,8 @@ const Team = () => {
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e,value) => checkValidation('store', value)}
-                                options={top100Films}
+                                onChange={(e, value) => checkValidation('store', value)}
+                                options={store}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params}
 
@@ -500,25 +551,25 @@ const Team = () => {
                                 {...register('poDate')}
                             /> */}
 
-                            <LocalizationProvider  dateAdapter={AdapterDayjs}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}
                             >
                                 <DemoContainer components={['DatePicker']}
                                 >
-                                { currentDate ? 
-                                    <DatePicker label="PO Date"
-                                        
-                                        name="poDate"
-                                        disablePast  
-                                        defaultValue={dayjs(currentDate)}
-                                        helperText={poDateError}                                    
-                                        error={poDateError && poDateError.length > 0 ? true : false}
-                                        sx={{ width: 300 }}
-                                        required
-                                        onChange={(date) => setDate(date)}
-                                        {...register('poDate')}
-                                    /> : ""
-                                }
-                                    
+                                    {currentDate ?
+                                        <DatePicker label="PO Date"
+
+                                            name="poDate"
+                                            disablePast
+                                            defaultValue={dayjs(currentDate)}
+                                            helperText={poDateError}
+                                            error={poDateError && poDateError.length > 0 ? true : false}
+                                            sx={{ width: 300 }}
+                                            required
+                                            onChange={(date) => setDate(date)}
+                                            {...register('poDate')}
+                                        /> : ""
+                                    }
+
                                 </DemoContainer>
                             </LocalizationProvider>
 
@@ -558,7 +609,7 @@ const Team = () => {
                                     <DatePicker label="PO Amend. Date"
                                         helperText={amendDateError}
                                         name="amendDate"
-                                        disablePast  
+                                        disablePast
                                         defaultValue={dayjs(currentDate)}
                                         error={amendDateError && amendDateError.length > 0 ? true : false}
                                         sx={{ width: 300 }}
@@ -603,7 +654,7 @@ const Team = () => {
 
                                     <DatePicker label="PO Eff. Date"
                                         helperText={amendDateError}
-                                        disablePast  
+                                        disablePast
                                         defaultValue={dayjs(currentDate)}
                                         name="effDate"
                                         error={effDateError && effDateError.length > 0 ? true : false}
@@ -651,6 +702,7 @@ const Team = () => {
                                     <DatePicker label="PO End Date"
                                         helperText={endDateError}
                                         name="endDate"
+                                        defaultValue={dayjs(currentDate)}
                                         error={endDateError && endDateError.length > 0 ? true : false}
                                         sx={{ width: 300 }}
                                         required
@@ -680,7 +732,7 @@ const Team = () => {
                                 disablePortal
                                 id="combo-box-demo"
                                 options={vendors}
-                                onChange={(e,value) => checkValidation('vendor', value)}
+                                onChange={(e, value) => checkValidation('vendor', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Vendor"
@@ -691,20 +743,81 @@ const Team = () => {
                                 />}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={7}>
-                        <TextField
-                                        
-                                        aria-readonly
-                                        autoComplete='given-name'
-                                        type='text'
-                                        fullWidth
-                                        id='storyStatus'                                        
-                                        value={vendorEvent}
-                                        autoFocus
-                                        {...register('vendorText')}
-                                    />
-                        </Grid>
 
+                        <Grid item xs={12} sm={7}>
+                            <TextField
+                                disabled
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                id='storyStatus'
+                                value={vendorEvent?.description}
+                                autoFocus
+                                {...register('vendorText')}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    my: 2,
+                                    ml: 5
+
+                                }}
+                            >
+                                Vendor Address
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                id='vendorAddress'
+                                helperText={vendorAddressError}
+                                onKeyUp={(e, value) => checkValidation('vendorAddress', value)}
+                                error={vendorAddressError && vendorAddressError.length > 0 ? true : false}
+                                {...register('vendorAddress')}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    my: 2,
+                                    ml: 5
+
+                                }}
+                            >
+                                Vendor State
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                onChange={(e, value) => checkValidation('vendorState', value)}
+                                options={vendorState}
+                                sx={{ width: 300 }}
+                                renderInput={(params) => <TextField
+                                    {...params}
+                                    label="Vendor State"
+                                    name="vendorState"
+                                    helperText={vendorStateError}
+                                    error={vendorStateError && vendorStateError.length > 0 ? true : false}
+                                    {...register('vendorState')}
+                                />}
+                            />
+                        </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
                                 variant="h5"
@@ -721,23 +834,23 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                        <TextField
-                                        
-                                        aria-readonly
-                                        autoComplete='given-name'
-                                        type='text'
-                                        fullWidth
-                                        id='storyStatus' 
-                                        label="Vendor Ref No."                                       
-                                        name="vendorReNum"
-                                        sx={{ width: 300 }}
-                                        onKeyUp={(e,value) => checkValidation('vendorReNum', value)}
-                                        helperText={vendorReNumError}
-                                        error={vendorReNumError && vendorReNumError.length > 0 ? true : false}
-                                        {...register('vendorReNum')}
-                                        autoFocus
-                                       
-                                    />
+                            <TextField
+
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                id='storyStatus'
+                                label="Vendor Ref No."
+                                name="vendorReNum"
+                                sx={{ width: 300 }}
+                                onKeyUp={(e, value) => checkValidation('vendorReNum', value)}
+                                helperText={vendorReNumError}
+                                error={vendorReNumError && vendorReNumError.length > 0 ? true : false}
+                                {...register('vendorReNum')}
+                                autoFocus
+
+                            />
                             {/* <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -775,15 +888,15 @@ const Team = () => {
                                 disablePortal
                                 id="combo-box-demo"
                                 options={currency}
-                                onChange={(e,value) => checkValidation('currency', value)}
+                                onChange={(e, value) => checkValidation('currency', value)}
                                 sx={{ width: 300 }}
                                 defaultValue="RUPPES"
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Currency"
                                     name="currency"
-                                    helperText={currencyError}
-                                    error={currencyError && currencyError.length > 0 ? true : false}
+                                    // helperText={currencyError}
+                                    // error={currencyError && currencyError.length > 0 ? true : false}
                                     {...register('currency')}
                                 />}
                             />
@@ -804,12 +917,27 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-
-                            <Autocomplete
+                        <TextField
+                                
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                label="Currency Converter"
+                                sx={{ width: 300 }}
+                                id='storyStatus'
+                                
+                                autoFocus
+                                helperText={currencyCError}
+                                onKeyUp={(e, value) => checkValidation('currencyConverter', value)}
+                                error={currencyCError && currencyCError.length > 0 ? true : false}
+                                {...register('currencyConverter')}
+                            />
+                            {/* <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
                                 options={top100Films}
-                                onChange={(e,value) => checkValidation('currencyConverter', value)}
+                                onChange={(e, value) => checkValidation('currencyConverter', value)}
                                 sx={{ width: 300 }}
                                 renderInput={(params) => <TextField
                                     {...params}
@@ -819,7 +947,7 @@ const Team = () => {
                                     error={currencyCError && currencyCError.length > 0 ? true : false}
                                     {...register('currencyConverter')}
                                 />}
-                            />
+                            /> */}
                         </Grid>
                         <Grid item xs={12} component={Paper} sx={{ width: "100%", mx: 50, mt: 2 }}>
                             <FormGroup sx={{
@@ -827,9 +955,9 @@ const Team = () => {
                                 flexDirection: "row",
                                 alignItems: "center",
                                 mt: 2,
-                                right: 1                               
+                                right: 1
                             }}
-                            {...register('type')}
+                                {...register('type')}
                             >
                                 <FormControlLabel value="PO Direct to OSP" control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
                                 <FormControlLabel value="Quality Assured" control={<Checkbox />} label="Quality Assured" />
@@ -870,11 +998,26 @@ const Team = () => {
                         </Grid>
                         <Grid item xs={12} sm={4}>
 
-                            <Autocomplete
+                            <TextField
+                                disabled
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                sx={{ width: 300 }}
+                                id='storyStatus'
+                                value={paymentTerms ? paymentTerms : ""}
+                                autoFocus
+
+                                {...register('payment_terms')}
+                            />
+                            {/* <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
+                                options={paymentTerm}
                                 sx={{ width: 300 }}
+                               
+                                defaultValue={paymentTerms}
                                 onChange={(e,value) => checkValidation('payment_terms', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
@@ -884,7 +1027,7 @@ const Team = () => {
                                     error={paymentTError && paymentTError.length > 0 ? true : false}
                                     {...register('payment_terms')}
                                 />}
-                            />
+                            /> */}
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -908,7 +1051,7 @@ const Team = () => {
                                 id="combo-box-demo"
                                 options={modeTransport}
                                 sx={{ width: 140 }}
-                                onChange={(e,value) => checkValidation('mode_of_transport', value)}
+                                onChange={(e, value) => checkValidation('mode_of_transport', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Mode of Transport"
@@ -917,26 +1060,26 @@ const Team = () => {
                                     error={modeoftransportError && modeoftransportError.length > 0 ? true : false}
                                     {...register('mode_of_transport')}
                                 />}
-                            />           
-                            
+                            />
+
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <TextField
-                                        disabled
-                                        aria-readonly
-                                        autoComplete='given-name'
-                                        type='text'
-                                        fullWidth
-                                        id='storyStatus' 
-                                        value={modeOfTransportDesc}                                       
-                                        name="mode_of_transport_desc"
-                                        sx={{ width: 150 }}
-                                        onKeyUp={(e,value) => checkValidation('mode_of_transport_desc', value)}                                        
-                                        {...register('mode_of_transport_desc')}
-                                        autoFocus
-                                       
-                                    />
-                            </Grid>
+                                disabled
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                id='storyStatus'
+                                value={modeOfTransportDesc}
+                                name="mode_of_transport_desc"
+                                sx={{ width: 150 }}
+                               
+                                {...register('mode_of_transport_desc')}
+                                autoFocus
+
+                            />
+                        </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
                                 variant="h5"
@@ -959,7 +1102,7 @@ const Team = () => {
                                 id="combo-box-demo"
                                 options={top100Films}
                                 sx={{ width: 300 }}
-                                onChange={(e,value) => checkValidation('price_basis', value)}
+                                onChange={(e, value) => checkValidation('price_basis', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
                                     label="Price Basis"
@@ -969,6 +1112,46 @@ const Team = () => {
                                     {...register('price_basis')}
                                 />}
                             />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    mt: 2
+
+                                }}
+                            >
+                                PO Value
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+
+                            <TextField fullWidth id="outlined-basic" name="po_value" value="0"   {...register('po_value')} sx={{ width: 300 }} variant="outlined" />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <Box component={Paper} sx={{ display: "flex", mt: 3, p: 2 }}>
+                                <Typography
+                                    variant="h4"
+                                    component="div"
+                                    sx={{
+                                        color: "black",
+                                        fontWeight: "bold",
+                                        mb: 3,
+                                        alignItems: "center",
+                                        mt: 3,
+                                    }}
+                                >
+                                    Amendment Reason
+                                </Typography>
+                                <TextField fullWidth id="outlined-basic" sx={{
+
+                                    mt: 3,
+                                }}  {...register('reason')} label="Amendment Reason" variant="outlined" />
+                            </Box>
                         </Grid>
                         <Grid container spacing={2} my={5}>
                             <Grid item xs={12} sm={6} align="right">

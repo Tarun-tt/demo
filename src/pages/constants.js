@@ -9,14 +9,29 @@ const category = [
     {label:'JW',id:3},
 ];
 const vendors = [
-    {label:'A0001/ABCD LTD',id:1},
-    {label:'V0001/VICTORY',id:2},
-    {label:'R0001/RAM LTD',id:3},
+    {label:'A0001',id:1,description:"ABC LTD",payment_id:1},
+    {label:'V0001',id:2,description:"VICTORY LTD",payment_id:2},
+    {label:'R0001',id:3,description:"RAM LTD",payment_id:2},
 ];
 const currency = [
     {label:'RUPEES',id:1},
     {label:'EURU',id:2},
     {label:'DOLLAR',id:3},
+];
+const vendorState = [
+    {label:'California',id:1},
+    {label:'Australia',id:2},
+    {label:'Japan',id:3},
+];
+const paymentTerm = [
+    {label:'100% advance Payment',id:1},
+    {label:'10% advance & balance after delivery',id:2},
+    
+];
+const store = [
+    {label:'RECIEVING STORE',wc_id:1,description:"RECIEVING STORE",id:1},
+    {label:'MAIN STORE',description:"MAIN STORE",wc_id:2,id:2},
+    
 ];
 const modeTransport = [
     {label:'50',id:1,description: "BY ROAD"},
@@ -30,4 +45,4 @@ const top100Films = [
     { label: 'Data 3', year: 2008 },
 ];
 
-export  {divisions,top100Films,category,vendors,currency,modeTransport};
+export  {divisions,top100Films,category,vendors,currency,modeTransport,paymentTerm,vendorState,store};

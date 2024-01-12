@@ -127,7 +127,7 @@ const Contacts = (props) => {
      // const { navigate } = this.props
      
       console.log(res);
-      toast.success('Added Successfully');
+      //toast.success('Added Successfully');
       
       toast.success("Added Successfully", {
         position: toast.POSITION.TOP_RIGHT,
@@ -501,7 +501,7 @@ const Contacts = (props) => {
 
 
             </Grid>
-            <Grid container spacing={2} a>
+            <Grid container spacing={2} >
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
                   variant="h5"

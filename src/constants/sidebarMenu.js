@@ -27,52 +27,5 @@ export const sidebarMenu = [
         icon: ReceiptOutlinedIcon,
         path: '/view',
     },
-    // {
-    //     title: 'MASTER',
-    //     icon: ReceiptOutlinedIcon,
-    //     path: '/invoices',
-    // },
-    // {
-    //     title: 'Inputs',
-    //     tag: 'divider'
-    // },
-    // {
-    //     title: 'Profile Form',
-    //     icon: PersonOutlinedIcon,
-    //     path: '/form',
-    // },
-    // {
-    //     title: 'Calendar',
-    //     icon: CalendarTodayOutlinedIcon,
-    //     path: '/calendar',
-    // },
-    // {
-    //     title: 'FAQ Page',
-    //     icon: HelpOutlineOutlinedIcon,
-    //     path: '/faq',
-    // },
-    // {
-    //     title: 'Charts',
-    //     tag: 'divider'
-    // },
-    // {
-    //     title: 'Bar Chart',
-    //     icon: BarChartOutlinedIcon,
-    //     path: '/bar',
-    // },
-    // {
-    //     title: 'Pie Chart',
-    //     icon: PieChartOutlineOutlinedIcon,
-    //     path: '/pie',
-    // },
-    // {
-    //     title: 'Line Chart',
-    //     icon: TimelineOutlinedIcon,
-    //     path: '/line',
-    // },
-    // {
-    //     title: 'Geography Chart',
-    //     icon: MapOutlinedIcon,
-    //     path: '/geography',
-    // },
+
 ]

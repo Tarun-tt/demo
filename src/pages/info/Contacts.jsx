@@ -2,7 +2,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, Grid, IconButton, MenuItem, Paper, Radio, RadioGroup, TextField, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../styles/theme";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import Header from "../../components/Header";
 import ClearIcon from '@mui/icons-material/Clear';
 import { useForm } from 'react-hook-form';
@@ -96,7 +96,19 @@ const Contacts = (props) => {
   const [ugstValue, setUgstValue] = useState("");
   const [igstValue, setIgstValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("perc");
-
+console.log("props",props);
+useEffect(() => {
+  if (props.formdata.vendorState === "DELHI") {
+    setSgstValue(9);
+    setUgstValue(9);
+    setIgstValue("");
+  } else {
+    setSgstValue("");
+    setUgstValue("");
+    setIgstValue(18);
+  }
+}, [props.formdata.vendorState]);
+const isJobWorkCategory = props.formdata.category === "JW";
   const handleFormSubmit = () => {
     const formDataArray = [];
     let formData=[];
@@ -153,20 +165,35 @@ const Contacts = (props) => {
     const newItem = event.target.value;
     setICode(newItem);
 
-    if (newItem === "1R0010001") {
-      handleHsnChange({ target: { value: "87089900" } }, id);
-      handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id);
-      // Additional logic for SGST and UGST values based on the selected item
-      setSgstValue(9);
-      setUgstValue(9);
-      setIgstValue(""); // Clear IGST value
-    } else if (newItem === "1C0010001") {
-      handleJobChange({ target: { value: "40169390" } }, id);
+    // if (newItem === "1R0010001") {
+    //   handleHsnChange({ target: { value: "87089900" } }, id);
+    //   handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id);
+     
+    // } else if (newItem === "1C0010001") {
+    //   handleHsnChange({ target: { value: "40169390" } }, id);
+    //   handleDescriptionChange({ target: { value: "Washer" } }, id);
+     
+    // }
+    if (isJobWorkCategory) {
+      if (newItem === "1R0010001") {
+        handleHsnChange({ target: { value: "" } }, id);  
+        handleJobChange({ target: { value: "Job Work" } }, id); 
+        handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id); 
+      } else if (newItem === "1C0010001") {
+        handleHsnChange({ target: { value: "" } }, id);  
+        handleJobChange({ target: { value: "Job Work" } }, id); 
       handleDescriptionChange({ target: { value: "Washer" } }, id);
-      // Additional logic for IGST value based on the selected item
-      setIgstValue(18);
-      setSgstValue(""); // Clear SGST value
-      setUgstValue(""); // Clear UGST value
+        
+      }
+    } else {
+      if (newItem === "1R0010001") {
+        handleHsnChange({ target: { value: "87089900" } }, id);
+        handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id);
+      } else if (newItem === "1C0010001") {
+        handleHsnChange({ target: { value: "40169390" } }, id);
+      handleDescriptionChange({ target: { value: "Washer" } }, id);
+
+      }
     }
     handleCellChange(id, "item", newItem);
   };
@@ -203,33 +230,43 @@ const Contacts = (props) => {
   };
   const calculateTotalDiscountAmount = (rows) => {
     return rows.reduce((total, row) => {
-      return total + (row.discountAmount || 0);
+      const discountAmount = row.rate * row.quan * (1-row.discountPercentage / 100);
+      return total + discountAmount;
     }, 0);
   };
-  const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
-    const newDiscountAmount = quantity * newRate * (1 - newDiscountPercentage / 100);
+  
+const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
+  const newDiscountAmount = quantity * newRate * (newDiscountPercentage / 100);
+  const finalDiscountAmount = quantity * newRate - newDiscountAmount;
 
-    setRows((prevRows) => {
-      const updatedRows = prevRows.map((row) => {
-        if (row.id === id) {
-          return { ...row, rate: newRate, discountPercentage: newDiscountPercentage, discountAmount: newDiscountAmount };
-        }
-        return row;
-      });
-      setDiscountAmount(newDiscountAmount);
-
-      handleCellChange(id, 'rate', newRate);
-      handleCellChange(id, 'discountPercentage', newDiscountPercentage);
-      handleCellChange(id, 'discountAmount', newDiscountAmount);
-
-      const updatedTotalDiscountAmount = calculateTotalDiscountAmount(updatedRows);
-      setTotalDiscountAmount(updatedTotalDiscountAmount);
-      const updatedTotalAmountWith18Percent = updatedTotalDiscountAmount * 1.18;
-      setTotalAmountWith18Percent(updatedTotalAmountWith18Percent);
-
-      return updatedRows;
+  setRows((prevRows) => {
+    const updatedRows = prevRows.map((row) => {
+      if (row.id === id) {
+        return {
+          ...row,
+          rate: newRate,
+          discountPercentage: newDiscountPercentage,
+          discountAmount: newDiscountAmount,
+          totalDiscountAmount: finalDiscountAmount,
+        };
+      }
+      return row;
     });
-  };
+
+    handleCellChange(id, 'rate', newRate);
+    handleCellChange(id, 'discountPercentage', newDiscountPercentage);
+    handleCellChange(id, 'discountAmount', newDiscountAmount);
+
+    const updatedTotalDiscountAmount = calculateTotalDiscountAmount(updatedRows);
+    setTotalDiscountAmount(updatedTotalDiscountAmount);
+    const updatedTotalAmountWith18Percent = updatedTotalDiscountAmount * 1.18;
+    setTotalAmountWith18Percent(updatedTotalAmountWith18Percent);
+
+    return updatedRows;
+  });
+};
+
+  
   const handleActiveChange = (event, id) => {
     const isChecked = event.target.checked;
 
@@ -297,7 +334,7 @@ const Contacts = (props) => {
   const contactsColumns = [
 
     { field: "item", headerName: "Item Code", type: 'number', flex: 1, renderCell: (params) => (<TextField fullWidth select variant="standard" value={params.row.item} onChange={(event) => handleItemChange(event, params.row.id)}> {itemsList.map((item) => (<MenuItem key={item} value={item}>{item}</MenuItem>))} </TextField>), },
-    { field: "registrarId", headerName: "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)} /> },
+    { field: "registrarId", headerName:  "HSN/SAC Code", renderCell: (params) => <TextField variant="standard" value={params.row.registrarId} onChange={(event) => handleHsnChange(event, params.row.id)} /> },
     { field: "name", headerName: "Job work Sac", flex: 1, editable: true, renderCell: (params) => <TextField variant="standard" value={params.row.name} onChange={(event) => handleJobChange(event, params.row.id)} /> },
     { field: "desc", headerName: "Description", flex: 2.5, editable: true, renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
     { field: "quan", headerName: "Quantity", flex: 1, type: 'number', renderCell: (params) => <TextField variant="standard" value={params.row.quan} onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
@@ -307,10 +344,7 @@ const Contacts = (props) => {
     {
       field: 'isActive', headerName: 'Acton', flex: 1, renderCell: (params) => (
         <Box style={{ display: 'flex', alignItems: 'center' }}>
-          <Checkbox
-            checked={params.row.isActive}
-            onChange={(event) => handleActiveChange(event, params.row.id)}
-          />
+          <Checkbox checked={params.row.isActive} onChange={(event) => handleActiveChange(event, params.row.id)} />
           <IconButton onClick={() => handleDeleteRow(params.row.id)}>
             <ClearIcon />
           </IconButton>
@@ -391,7 +425,7 @@ const Contacts = (props) => {
       </Box>
       <Box component={Paper} sx={{ mt: 3, display: "flex", flexDirection: "row", gap: 5, padding: 2 }} >
         <Typography variant="h6" sx={{ color: "black", fontWeight: "bold", }}>
-          Total Discount Amount: {totalDiscountAmount.toFixed(2)}
+          After Discount Amount: {totalDiscountAmount.toFixed(2)}
         </Typography>
         <Typography variant="h6" sx={{ color: "black", fontWeight: "bold", }}>          
           Total Amount with GST: {totalAmountWith18Percent.toFixed(2)}

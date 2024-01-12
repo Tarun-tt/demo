@@ -19,9 +19,9 @@ const currency = [
     {label:'DOLLAR',id:3},
 ];
 const vendorState = [
-    {label:'California',id:1},
-    {label:'Australia',id:2},
-    {label:'Japan',id:3},
+    {label:'DELHI',id:1},
+    {label:'MUMBAI',id:2},
+    {label:'GUJRAT',id:3},
 ];
 const paymentTerm = [
     {label:'100% advance Payment',id:1},
@@ -34,9 +34,8 @@ const store = [
     
 ];
 const priceBasis = [
-    {lable:"10",id:1},
-    {lable:"20",id:2},
-    {lable:"30",id:3}
+    {label:"EX FACTORY",id:1},
+    {label:"CIF",id:2}
 ];
 const modeTransport = [
     {label:'50',id:1,description: "BY ROAD"},
@@ -44,10 +43,10 @@ const modeTransport = [
     {label:'52',id:3,description: "BY HAND"},
 ];
 const top100Films = [
-    { label: 'Tarun1', year: 1994 },
-    { label: 'Data1', year: 1972 },
-    { label: 'Data Part II', year: 1974 },
-    { label: 'Data 3', year: 2008 },
+    { label: 'P1', year: 1994 },
+    { label: 'P2', year: 1972 },
+    { label: 'P3', year: 1974 },
+    { label: 'P4', year: 2008 },
 ];
 
 export  {divisions,top100Films,category,vendors,currency,modeTransport,paymentTerm,vendorState,store,priceBasis};

@@ -843,7 +843,7 @@ const Team = () => {
 
                                 aria-readonly
                                 autoComplete='given-name'
-                                type='text'
+                                type='number'
                                 fullWidth
                                 id='storyStatus'
                                 label="Vendor Ref No."
@@ -1101,10 +1101,10 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <Autocomplete
+                        <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
-                                options={top100Films}
+                                options={priceBasis}
                                 sx={{ width: 300 }}
                                 onChange={(e, value) => checkValidation('price_basis', value)}
                                 renderInput={(params) => <TextField
@@ -1116,6 +1116,7 @@ const Team = () => {
                                     {...register('price_basis')}
                                 />}
                             />
+                            
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography

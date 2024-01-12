@@ -34,8 +34,8 @@ const store = [
     
 ];
 const priceBasis = [
-    {label:"EX FACTORY",id:1},
-    {label:"CIF",id:2}
+    {label:"1",description:"EX FACTORY",id:1},
+    {label:"2",description:"CIF",id:2}
 ];
 const modeTransport = [
     {label:'50',id:1,description: "BY ROAD"},

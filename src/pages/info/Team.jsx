@@ -31,7 +31,10 @@ const Team = () => {
     const [endDateError, setEndDateError] = useState("");
     const [effDateError, setEffDateError] = useState("");
     const [comboboxError, setComboboxError] = useState("");
+    const [priceDesc, setPriceDesc] = useState("");
+    const [amendment, setAmendment] = useState(false);
 
+    
     const [vendorReNumError, setVendorReNumError] = useState("");
 
     const [currencyError, setCurrencyError] = useState("");
@@ -224,8 +227,9 @@ const Team = () => {
 
 
         if (formDirty) {
-            reset();
-            return false
+            reset();formData["price_basis"]= priceDesc;
+            console.log('form data is - ', formData);
+            return false;
         } else {
             let ram = Math.floor(100000 + Math.random() * 900000);
             setPoNum(ram)
@@ -237,6 +241,7 @@ const Team = () => {
             formData["potype"] = selectedValue;
             formData["mode_of_transport_desc"]= modeOfTransportDesc;
             formData["payment_terms"]= paymentTerms;
+            formData["price_desc"]= priceDesc;
             formData["vendorText"] = vendorEvent?.description
             console.log('form data is - ', formData);
             setFormData(formData);
@@ -349,6 +354,14 @@ const Team = () => {
         }
         
         if (field === 'price_basis') {
+            //console.log(value);
+            const pterm1 = priceBasis.filter((res) => {
+                if (res.id == value.id) {
+                    return res.description;
+                }
+            });
+            //console.log(pterm1[0].description);
+            setPriceDesc(pterm1[0].description)
             setPricebasisError('');
         }
 
@@ -414,7 +427,6 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -423,7 +435,6 @@ const Team = () => {
                                 onChange={(e, value) => checkValidation('division', value)}
                                 renderInput={(params) =>
                                     <TextField {...params}
-
                                         label="Division Name"
                                         helperText={divisionError}
                                         error={divisionError && divisionError.length > 0 ? true : false}
@@ -1100,12 +1111,12 @@ const Team = () => {
                                 Price Basis
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={2}>
                         <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
                                 options={priceBasis}
-                                sx={{ width: 300 }}
+                                
                                 onChange={(e, value) => checkValidation('price_basis', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
@@ -1116,7 +1127,25 @@ const Team = () => {
                                     {...register('price_basis')}
                                 />}
                             />
+                           
                             
+                            
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                        <TextField
+                                disabled
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                fullWidth
+                                id='storyStatus'
+                                value={priceDesc}
+                                name="price_desc"
+                                sx={{ width: 150 }}                               
+                                {...register('price_desc')}
+                                autoFocus
+                            />
+                       
                         </Grid>
                         <Grid item xs={12} sm={2}>
                             <Typography
@@ -1137,7 +1166,7 @@ const Team = () => {
 
                             <TextField fullWidth id="outlined-basic" name="po_value" value="0"   {...register('po_value')} sx={{ width: 300 }} variant="outlined" />
                         </Grid>
-                        <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={12}  style={ !amendment ? { display:'none'} : {}}>
                             <Box component={Paper} sx={{ display: "flex", mt: 3, p: 2 }}>
                                 <Typography
                                     variant="h4"

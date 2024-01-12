@@ -96,22 +96,10 @@ const Contacts = (props) => {
   const [ugstValue, setUgstValue] = useState("");
   const [igstValue, setIgstValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("perc");
-console.log("props",props);
-useEffect(() => {
-  if (props.formdata.vendorState === "DELHI") {
-    setSgstValue(9);
-    setUgstValue(9);
-    setIgstValue("");
-  } else {
-    setSgstValue("");
-    setUgstValue("");
-    setIgstValue(18);
-  }
-}, [props.formdata.vendorState]);
-const isJobWorkCategory = props.formdata.category === "JW";
-  const handleFormSubmit = () => {
+
+  const handleFormSubmit = (formDataNew) => {console.log(formDataNew);
     const formDataArray = [];
-    let formData=[];
+  //  let formData=[];
     rows.forEach((row) => {
       const rowData = {
         id: row.id || '',
@@ -128,13 +116,17 @@ const isJobWorkCategory = props.formdata.category === "JW";
   
       formDataArray.push(rowData);
     });
-    formData=props.formdata;
+    formDataNew={formDataNew,...props.formdata};
+    formDataNew['igst']=igstValue;
+    formDataNew['ugst']=ugstValue;
+    formDataNew['sgst']=sgstValue;
+    formDataNew['remark']=formDataNew.formDataNew.remark
     
-    formData['po_value']=totalAmountWith18Percent.toFixed(2);
-    formData["itemsData"]=JSON.stringify(formDataArray);
-    console.log('formDataArray:', formData);
+    formDataNew['po_value']=totalAmountWith18Percent.toFixed(2);
+    formDataNew["itemsData"]=JSON.stringify(formDataArray);
+    console.log('formDataArray:', formDataNew);
 
-    axios.post('http://localhost:8080/api/poc/add', formData)
+    axios.post('http://localhost:8080/api/poc/add', formDataNew)
     .then(res=>{
      // const { navigate } = this.props
      
@@ -481,7 +473,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   SGST
                 </Typography>
-                <TextField id="outlined-basic" label="SGST"  {...register('sgst')} variant="outlined" value={sgstValue} disabled />
+                <TextField id="outlined-basic" label="SGST" name="sgst"  {...register('sgst')} variant="outlined" value={sgstValue} disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -497,7 +489,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   UGST
                 </Typography>
-                <TextField id="outlined-basic" label="UGST" {...register('ugst')} variant="outlined" value={ugstValue} disabled />
+                <TextField id="outlined-basic" label="UGST" name="ugst" {...register('ugst')} variant="outlined" value={ugstValue} disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -513,7 +505,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CGST
                 </Typography>
-                <TextField id="outlined-basic" label="CGST" {...register('cgst')} variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CGST" name="cgst" {...register('cgst')} variant="outlined" disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -529,7 +521,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   IGST
                 </Typography>
-                <TextField id="outlined-basic" label="IGST" variant="outlined" {...register('igst')} value={igstValue} disabled />
+                <TextField id="outlined-basic" label="IGST" name="igst" variant="outlined" {...register('igst')} value={igstValue} disabled />
               </Grid>
 
 
@@ -550,7 +542,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CESS
                 </Typography>
-                <TextField id="outlined-basic" label="CESS" {...register('CESS')} variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CESS"  name="CESS" {...register('CESS')} variant="outlined" disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -566,7 +558,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CESS
                 </Typography>
-                <TextField id="outlined-basic" label="CESS" {...register('CESS')}  variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CESS" name="CESS"  {...register('CESS')}  variant="outlined" disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -582,7 +574,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CESS
                 </Typography>
-                <TextField id="outlined-basic" label="CESS" {...register('CESS')} variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CESS" name="CESS"  {...register('CESS')} variant="outlined" disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -598,7 +590,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CESS
                 </Typography>
-                <TextField id="outlined-basic" label="CESS" {...register('CESS')} variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CESS" name="CESS"  {...register('CESS')} variant="outlined" disabled />
               </Grid>
 
             </Grid>
@@ -710,11 +702,11 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
           >
             Remarks:
           </Typography>
-          <TextField fullWidth id="outlined-basic" label="Remarks" {...register('remarks')} variant="outlined" inputProps={{ maxLength: 4000 }} />
+          <TextField fullWidth id="outlined-basic" label="Remarks" name="remark" {...register('remark')} variant="outlined" inputProps={{ maxLength: 4000 }} />
         </Box>
         <Grid container spacing={2} my={5}>
           <Grid item xs={12} sm={6} align="right">
-            <Button variant="contained" style={{ fontSize: "15px" }} onClick={handleFormSubmit} color="success" > Save </Button>
+            <Button variant="contained" style={{ fontSize: "15px" }} onClick={handleSubmit(handleFormSubmit)} color="success" > Save </Button>
           </Grid>
           <Grid item xs={12} sm={6} align="left">
             <Button variant='outlined' style={{ fontSize: "15px" }} > Cancel</Button>

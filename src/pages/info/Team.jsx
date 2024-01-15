@@ -71,6 +71,26 @@ const Team = () => {
         console.log(tabIndex);
         setCurrentTabIndex(tabIndex);
     };
+    useEffect(()=>{
+        let idPoc;
+        axios.get('http://localhost:8080/api/poc/getLatest/')
+        .then(res => {
+            // const { navigate } = this.props
+           
+            console.log(res?.data?.response[0].id+1);
+            idPoc=res?.data?.response[0]!=""?res?.data?.response[0].id+1:1;
+            console.log(idPoc);
+            setPoNum(idPoc)
+        }).catch(error => { //console.log(history.push('/companyDetail'),"jjjjjjjj");
+            idPoc=1;
+            console.log(idPoc);
+            setPoNum(idPoc)
+            
+            // toast.error('Some error!');
+        });
+     //   let ram = idPoc;
+        setPoNum(idPoc)
+    },[])
     const [poDate, sePotDate] = useState(null);
     const handlePoDateChange = (e, value) => {
         console.log(e.target.value)
@@ -227,17 +247,19 @@ const Team = () => {
 
 
         if (formDirty) {
+           
             reset();formData["price_basis"]= priceDesc;
             console.log('form data is - ', formData);
             return false;
         } else {
-            let ram = Math.floor(100000 + Math.random() * 900000);
-            setPoNum(ram)
+            let idPoc;
+            
             setPonumberError("");
             //const response = await postAPI(apiEndpoints.registerBacklog, formData);
             // reset();
             //    return true;
-            formData["ponumber"] = ram;
+            console.log(idPoc);
+            formData["ponumber"] = ponum;
             formData["potype"] = selectedValue;
             formData["mode_of_transport_desc"]= modeOfTransportDesc;
             formData["payment_terms"]= paymentTerms;
@@ -246,6 +268,8 @@ const Team = () => {
             console.log('form data is - ', formData);
             setFormData(formData);
             setShowTab(false)
+            setCurrentTabIndex(currentTabIndex+1);
+            toast.success('Main Detail saved sussessfully!');
             // axios.post('http://localhost:8080/api/poc/add', formData)
             //     .then(res=>{
             //      // const { navigate } = this.props

@@ -11,6 +11,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { useNavigate, useLocation } from "react-router-dom";
+
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { currency, vendorState } from "../constants";
@@ -18,6 +20,8 @@ import { currency, vendorState } from "../constants";
 const Team = () => {
     const [date, setDate] = useState(new Date());
     const theme = useTheme();
+    const navigate = useNavigate();
+    const location = useLocation();
     const colors = tokens(theme.palette.mode);
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
     const [storyStatus, setStoryStatusError] = useState("");
@@ -42,27 +46,38 @@ const Team = () => {
     const [vendorEvent, setVendorEvent] = useState("");
     const [selectedValue, setSelectedValue] = useState("onetimepo");
     const [modeOfTransportDesc, setModeOfTransportDesc] = useState("");
-    const [paymentTerms, setPaymentTerms] = useState("");
+    const [pOCVALUE, setPOCVALUE] = useState("");
     const [vendorStateError, setVendorStateError] = useState("");
 
     const [vendorAddressError, setVendorAddressError] = useState("");
+    const [currentValue, setCurrentValue] = useState("");
+    const handleCurrentValue=(event)=>{
+        const pocId=event.target.value
+        setCurrentValue(pocId);
+        //console.log("tarun",tarun);
+    }
+
 
     const [data, setData] = useState("");
     const [itinerary, setItinerary] = useState("");
-    console.log("kiii")
-    useEffect(()=>{console.log("kiii")
-     let id=1;
-     axios.get('http://localhost:8080/api/poc/getPocById/'+id)
-     .then(res=>{
-      // const { navigate } = this.props
-      setData(res?.data.response);
-       console.log(res.data.response);
-       setItinerary(JSON.parse(res?.data.response.itemsData));
-     }).catch(error => { //console.log(history.push('/companyDetail'),"jjjjjjjj");
-       console.log(error.response);
-       toast.error('Some error!');      
-     });
-    },[])
+   // console.log("kiii")
+    useEffect(() => {
+        setItinerary("")
+        console.log("kiii",)
+        let id = currentValue!=""?currentValue:location.pathname.split("/")[2];
+        axios.get('http://localhost:8080/api/poc/getPocById/' + id)
+            .then(res => {
+                // const { navigate } = this.props
+                setData(res?.data.response);
+                console.log(res.data.response);
+                let dd= JSON.parse(res?.data.response.itemsData).filter((res)=> !!res.item)
+                
+                setItinerary(dd);
+            }).catch(error => { //console.log(history.push('/companyDetail'),"jjjjjjjj");
+                console.log(error.response);
+                toast.error('Some error to fetching data!');
+            });
+    }, [currentValue])
 
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
@@ -111,10 +126,11 @@ const Team = () => {
     };
 
     const checkValidation = (field, value) => {
-        //  let formData = event.target.value;
+         let formData = value.target.value;
 
-        if (field === 'division') {
-            setDivisionError('');
+        if (field === 'pocValue') {
+           setPOCVALUE(formData);
+           console.log(pOCVALUE)
         }
         if (field === 'category') {
             setCategoryError('');
@@ -204,501 +220,537 @@ const Team = () => {
         createData('Cupcake', 305, 3.7, 67, 4.3),
         createData('Gingerbread', 356, 16.0, 49, 3.9),
     ];
-   // console.log(itinerary)
+    // console.log(itinerary)
     return (
         <Box m="20px">
 
             {/* <Header title="Main" subtitle="SIETZ TECHNOLOGIES INDIA PVT LTD." /> */}
 
-            
+
 
             {/* TAB 1 Contents */}
-                <Box sx={{ p: 3 }}>
+            <Box sx={{ p: 3 }}>
+           
+                <Box component={Paper} sx={{ width: "18%", ml: 50 }}>
+                    
+                    <FormGroup sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        mt: 2,
+                        ml: 2,
+                        my: 3
+                    }}>
 
-                    <Box component={Paper} sx={{ width: "18%", ml: 50 }}>
+                        <RadioGroup
+                            aria-labelledby="demo-radio-buttons-group-label"
+                            defaultValue="onetimepo"
+                            name="radio-buttons-group"
+                            onChange={(e, value) => checkValidation('potype', value)}
+                            {...register('potype')}
+                        >
+                            <FormControlLabel value="onetimepo" checked={selectedValue === 'onetimepo'} onChange={handleChange} control={<Radio />} label="One Time PO" />
+                            <FormControlLabel value="openpo" checked={selectedValue === 'openpo'} onChange={handleChange} control={<Radio />} label="Open PO" />
 
+                        </RadioGroup>
+
+                    </FormGroup>
+                </Box>
+                <Grid container spacing={2}>
+                        <Grid item xs={12} sm={2}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    my: 2,
+                                    ml: 5
+
+                                }}
+                            >
+                                POC VALUE
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+
+                                aria-readonly
+                                autoComplete='given-name'
+                                type='text'
+                                
+                                id='vendorAddress'
+                                name="pocValue"
+                                value={currentValue}
+                                onChange={(handleCurrentValue)}
+                                // onKeyUp={(e, value) => checkValidation('pocValue', e)}
+                            //    {...register('pocValue')}
+                            />
+                        </Grid>
+                    </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Division Name :
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+
+                        <Typography my={2}>
+                            {data != "" ? data?.division : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Category :
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data?.category : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            PO Number :
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+
+                        <Typography my={2}>
+                            {data != "" ? data?.ponumber : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Store
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+
+                        <Typography my={2}>
+                            {data != "" ? data.store : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            PO Date
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+
+                        <Typography my={2}>
+                            {data != "" ? data.poDate : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            PO Amend Date
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.amendDate : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            PO Eff. Date
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.effDate : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            PO End Date
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.endDate : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Vendor
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography my={2}>
+                            {data != "" ? data.vendor : "NA"}
+                        </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} sm={7}>
+                        <Typography my={2}>
+                            {data != "" ? data.mode_of_transport_desc : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Vendor Address
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.vendorAddress : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Vendor State
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.vendorState : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Vendor Ref No.
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.vendorReNum : "NA"}
+                        </Typography>
+
+
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Currency
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.currency : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            Currency Converter
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.currencyConverter : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} component={Paper} sx={{ width: "100%", mx: 50, mt: 2 }}>
                         <FormGroup sx={{
                             display: "flex",
                             flexDirection: "row",
                             alignItems: "center",
                             mt: 2,
-                            ml: 2,
-                            my: 3
-                        }}>
+                            right: 1
+                        }}
 
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="onetimepo"
-                                name="radio-buttons-group"
-                                onChange={(e, value) => checkValidation('potype', value)}
-                                {...register('potype')}
-                            >
-                                <FormControlLabel value="onetimepo" checked={selectedValue === 'onetimepo'} onChange={handleChange} control={<Radio />} label="One Time PO" />
-                                <FormControlLabel value="openpo" checked={selectedValue === 'openpo'} onChange={handleChange} control={<Radio />} label="Open PO" />
+                        >
+                            <FormControlLabel value="PO Direct to OSP" control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
+                            <FormControlLabel value="Quality Assured" control={<Checkbox />} label="Quality Assured" />
+                            <FormControlLabel value="None" control={<Checkbox />} label="None" />
 
-                            </RadioGroup>
 
                         </FormGroup>
-                    </Box>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
+                    </Grid>
+                    <Grid item xs={12} align='left'>
+                        <Typography
+                            variant="h4"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                mb: 2,
+                                mt: 2
 
-                                }}
-                            >
-                                Division Name :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                                {data!=""?data?.division:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Category :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data?.category:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                PO Number :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                            {data!=""?data?.ponumber:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Store
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                            {data!=""?data.store:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                PO Date
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                            {data!=""?data.poDate:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                PO Amend Date
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.amendDate:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                PO Eff. Date
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.effDate:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                PO End Date
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.endDate:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Vendor
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography my={2}>
-                            {data!=""?data.vendor:"NA"}
-                            </Typography>
-                        </Grid>
-
-                        <Grid item xs={12} sm={7}>
-                            <Typography my={2}>
-                            {data!=""?data.mode_of_transport_desc:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Vendor Address
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.vendorAddress:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Vendor State
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.vendorState:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Vendor Ref No.
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.vendorReNum:"NA"}
-                            </Typography>
-
-
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Currency
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.currency:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                Currency Converter
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.currencyConverter:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} component={Paper} sx={{ width: "100%", mx: 50, mt: 2 }}>
-                            <FormGroup sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                mt: 2,
-                                right: 1
                             }}
-                                
-                            >
-                                <FormControlLabel value="PO Direct to OSP" control={<Checkbox defaultChecked />} label="PO Direct to OSP" />
-                                <FormControlLabel value="Quality Assured" control={<Checkbox />} label="Quality Assured" />
-                                <FormControlLabel value="None" control={<Checkbox />} label="None" />
+                        >
+                            Terms and Conditions
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                mb: 2,
+                                mt: 2
 
+                            }}
+                        >
+                            Payment Terms
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
 
-                            </FormGroup>
-                        </Grid>
-                        <Grid item xs={12} align='left'>
+                        <Typography my={2}>
+                            {data != "" ? data.payment_terms : "NA"}
+                        </Typography>
+                        <Typography my={2}>
+                            Test
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                mb: 2,
+                                mt: 2
+
+                            }}
+                        >
+                            Mode of Transport
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography my={2}>
+                            {data != "" ? data.mode_of_transport : "NA"}
+
+                        </Typography>
+
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography my={2}>
+                            {data != "" ? data.mode_of_transport_desc : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                mb: 2,
+                                mt: 2
+
+                            }}
+                        >
+                            Price Basis
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+
+                        <Typography my={2}>
+                            {data != "" ? data.price_basis : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                mb: 2,
+                                mt: 2
+
+                            }}
+                        >
+                            PO Value
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography my={2}>
+                            {data != "" ? data.po_value : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <Box component={Paper} sx={{ display: "flex", mt: 3, p: 2 }}>
                             <Typography
                                 variant="h4"
                                 component="div"
                                 sx={{
                                     color: "black",
                                     fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
-
+                                    mb: 3,
+                                    alignItems: "center",
+                                    mt: 3,
                                 }}
                             >
-                                Terms and Conditions
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
-
-                                }}
-                            >
-                                Payment Terms
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                            {data!=""?data.payment_terms:"NA"}
+                                Amendment Reason
                             </Typography>
                             <Typography my={2}>
-                                Test
+                                {data != "" ? data.reason : "NA"}
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
-
-                                }}
-                            >
-                                Mode of Transport
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography my={2}>
-                            {data!=""?data.mode_of_transport:"NA"}
-
-                            </Typography>
-
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography my={2}>
-                            {data!=""?data.mode_of_transport_desc:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
-
-                                }}
-                            >
-                                Price Basis
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-
-                            <Typography my={2}>
-                            {data!=""?data.price_basis:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    mb: 2,
-                                    mt: 2
-
-                                }}
-                            >
-                                PO Value
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Typography my={2}>
-                            {data!=""?data.po_value:"NA"}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={12}>
-                            <Box component={Paper} sx={{ display: "flex", mt: 3, p: 2 }}>
-                                <Typography
-                                    variant="h4"
-                                    component="div"
-                                    sx={{
-                                        color: "black",
-                                        fontWeight: "bold",
-                                        mb: 3,
-                                        alignItems: "center",
-                                        mt: 3,
-                                    }}
-                                >
-                                    Amendment Reason
-                                </Typography>
-                                <Typography my={2}>
-                                {data!=""?data.reason:"NA"}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid xs={12} sm={12} my={3}>
-                            <Typography variant="h3" sx={{ fontWeight: 600 }}>Items Itinerary</Typography>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead >
-                                        <TableRow>
-                                            <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>ITEM CODE</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>HSN/SAC CODE</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>JOB WORK SAC</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DESCRIPTION</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>QUANTITY</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>RATE</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DISCOUNT(%)</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DISCOUNT AMT</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    {/* <TableBody>
-                                        {itinerary?.map((row1) => (
+                        </Box>
+                    </Grid>
+                    <Grid xs={12} sm={12} my={3}>
+                        <Typography variant="h3" sx={{ fontWeight: 600 }}>Items Itinerary</Typography>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead >
+                                    <TableRow>
+                                    <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>S. NO.</TableCell>
+                                        <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>ITEM CODE</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>HSN/SAC CODE</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>JOB WORK SAC</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DESCRIPTION</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>QUANTITY</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>RATE</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DISCOUNT(%)</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: "bold", fontSize: "14px" }}>DISCOUNT AMT</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                        {itinerary && itinerary?.map((row1, index) => (
                                             <TableRow
                                                 key={row1.name}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
+                                                <TableCell component="th" scope="row" sx={{ fontSize: '14px' }}>
+                                                    {index+1}
+                                                </TableCell>
                                                 <TableCell component="th" scope="row" sx={{ fontSize: '14px' }}>
                                                     {row1.item}
                                                 </TableCell>
@@ -711,182 +763,182 @@ const Team = () => {
                                                 <TableCell align="right" sx={{ fontSize: '14px' }}>{row1.discountAmount}</TableCell>
                                             </TableRow>
                                         ))}
-                                    </TableBody> */}
-                                </Table>
-                            </TableContainer>
-                        </Grid>
+                                    </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Grid>
-                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }} >GST</Typography>
-                    <Grid container spacing={2} >
+                </Grid>
+                <Typography sx={{ fontSize: "20px", fontWeight: "bold" }} >GST</Typography>
+                <Grid container spacing={2} >
 
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                SGST :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-
-                            <Typography my={2}>
-                                9%
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                UGST :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-
-                            <Typography my={2}>
-                                9%
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    my: 2,
-                                    ml: 5
-
-                                }}
-                            >
-                                IGST :
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-
-                            <Typography my={2}>
-                                9%
-                            </Typography>
-                        </Grid>
-
-
-                    </Grid>
-                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }} >Others</Typography>
-                    <Box sx={{ display: "flex", flexDirection: "row", gap: 2, padding: 2 }} >
-
-                        <Grid container spacing={2}  >
-                            <Grid item xs={12} sm={6} md={3} sx={{ display: "flex", mb: 1 }}>
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    sx={{
-                                        color: "black",
-                                        fontWeight: "bold",
-                                        mb: 2,
-                                        mt: 2,
-                                        mr: 2
-                                    }}
-                                >
-                                    Packing
-                                </Typography>
-                                <Typography my={2}>
-                                    9%
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    sx={{
-                                        color: "black",
-                                        fontWeight: "bold",
-                                        mb: 2,
-                                        mt: 2,
-                                        mr: 2
-                                    }}
-                                >
-                                    Rate Unit
-                                </Typography>
-                                <Typography my={2}>
-                                    9%
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    sx={{
-                                        color: "black",
-                                        fontWeight: "bold",
-                                        mb: 2,
-                                        mt: 2,
-                                        mr: 2
-                                    }}
-                                >
-                                    Fabrication Charges
-                                </Typography>
-                                <Typography my={2}>
-                                    9%
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    sx={{
-                                        color: "black",
-                                        fontWeight: "bold",
-                                        mb: 2,
-                                        mt: 2,
-                                        mr: 2
-                                    }}
-                                >
-                                    UOM
-                                </Typography>
-                                <Typography my={2}>
-                                    9%
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    <Box sx={{ display: "flex", mt: 3, p: 2 ,mb:4 }}>
+                    <Grid item xs={12} sm={2}>
                         <Typography
-                            variant="h4"
+                            variant="h5"
                             component="div"
                             sx={{
                                 color: "black",
                                 fontWeight: "bold",
-                                mb: 2,
-                                alignItems: "center",
-                                mt: 2,
-                                mr: 2
+                                my: 2,
+                                ml: 5
+
                             }}
                         >
-                            Remarks:
+                            SGST :
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+
                         <Typography my={2}>
-                            9%
+                        {data?.sgst != "" ? data?.sgst+"%" : "NA"}
                         </Typography>
-                    </Box>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            UGST :
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+
+                        <Typography my={2}>
+                            {data?.ugst != "" ? data.ugst+"%" : "NA"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                color: "black",
+                                fontWeight: "bold",
+                                my: 2,
+                                ml: 5
+
+                            }}
+                        >
+                            IGST :
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+
+                        <Typography my={2}>
+                            {data.igst != "" ? data.igst+"%" : "NA"}
+                        </Typography>
+                    </Grid>
 
 
+                </Grid>
+                <Typography sx={{ fontSize: "20px", fontWeight: "bold" }} >Others</Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 2, padding: 2 }} >
+
+                    <Grid container spacing={2}  >
+                        <Grid item xs={12} sm={6} md={3} sx={{ display: "flex", mb: 1 }}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    mt: 2,
+                                    mr: 2
+                                }}
+                            >
+                                Packing
+                            </Typography>
+                            <Typography my={2}>
+                                {data != "" ? data.packing : "NA"}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    mt: 2,
+                                    mr: 2
+                                }}
+                            >
+                                Rate Unit
+                            </Typography>
+                            <Typography my={2}>
+                                {data != "" ? data.rate_unit : "NA"}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    mt: 2,
+                                    mr: 2
+                                }}
+                            >
+                                Fabrication Charges
+                            </Typography>
+                            <Typography my={2}>
+                                {data != "" ? data.fabric : "NA"}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    mt: 2,
+                                    mr: 2
+                                }}
+                            >
+                                UOM
+                            </Typography>
+                            <Typography my={2}>
+                                {data != "" ? data.uom : "NA"}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Box>
+                <Box sx={{ display: "flex", mt: 3, p: 2, mb: 4 }}>
+                    <Typography
+                        variant="h4"
+                        component="div"
+                        sx={{
+                            color: "black",
+                            fontWeight: "bold",
+                            mb: 2,
+                            alignItems: "center",
+                            mt: 2,
+                            mr: 2
+                        }}
+                    >
+                        Remarks:
+                    </Typography>
+                    <Typography my={2}>
+                        {data != "" ? data.remark : "NA"}
+                    </Typography>
                 </Box>
 
-          
+
+            </Box>
+
+
 
 
         </Box>

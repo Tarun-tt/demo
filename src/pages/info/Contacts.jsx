@@ -96,7 +96,18 @@ const Contacts = (props) => {
   const [ugstValue, setUgstValue] = useState("");
   const [igstValue, setIgstValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("perc");
-
+  useEffect(() => {
+    if (props?.formdata?.vendorState === "DELHI") {
+      setSgstValue(9);
+      setUgstValue(9);
+      setIgstValue("");
+    } else {
+      setSgstValue("");
+      setUgstValue("");
+      setIgstValue(18);
+    }
+  }, [props?.formdata?.vendorState]);
+  const isJobWorkCategory = props?.formdata?.category === "JW";
   const handleFormSubmit = (formDataNew) => {console.log(formDataNew);
     const formDataArray = [];
   //  let formData=[];
@@ -121,6 +132,10 @@ const Contacts = (props) => {
     formDataNew['ugst']=ugstValue;
     formDataNew['sgst']=sgstValue;
     formDataNew['remark']=formDataNew.formDataNew.remark
+    formDataNew['fabric']=formDataNew.formDataNew.fabric
+    formDataNew['packing']=formDataNew.formDataNew.packing
+    formDataNew['rate_unit']=formDataNew.formDataNew.rateunit
+    formDataNew['uom']=formDataNew.formDataNew.uom
     
     formDataNew['po_value']=totalAmountWith18Percent.toFixed(2);
     formDataNew["itemsData"]=JSON.stringify(formDataArray);

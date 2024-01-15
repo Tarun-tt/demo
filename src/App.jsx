@@ -28,7 +28,7 @@ const App = () => {
           
                 <Route path="/" element={<Team />} />
                 <Route path="/items" element={<Contacts />} />
-                <Route path="/view" element={<View />} />
+                <Route path="/view/:id" element={<View />} />
               
               </Routes>
               <ToastContainer />

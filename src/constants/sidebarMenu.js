@@ -17,15 +17,15 @@ export const sidebarMenu = [
         icon: PeopleOutlinedIcon,
         path: '/',
     },
-    {
-        title: 'ITEMS',
-        icon: ContactsOutlinedIcon,
-        path: '/items',
-    },
+    // {
+    //     title: 'ITEMS',
+    //     icon: ContactsOutlinedIcon,
+    //     path: '/items',
+    // },
     {
         title: 'DETAIL',
         icon: ReceiptOutlinedIcon,
-        path: '/view',
+        path: '/view/1',
     },
 
 ]

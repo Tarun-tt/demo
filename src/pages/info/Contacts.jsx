@@ -182,6 +182,10 @@ const Contacts = (props) => {
     //   handleDescriptionChange({ target: { value: "Washer" } }, id);
      
     // }
+    if (newItem === "1R0010001" || newItem === "1C0010001") {
+      handleActiveChange({ target: { checked: true } }, id); 
+      handleDiscountPercentageChange({ target: { value: 0 } }, id); 
+    }
     if (isJobWorkCategory) {
       if (newItem === "1R0010001") {
         handleHsnChange({ target: { value: "" } }, id);  
@@ -191,7 +195,6 @@ const Contacts = (props) => {
         handleHsnChange({ target: { value: "" } }, id);  
         handleJobChange({ target: { value: "Job Work" } }, id); 
       handleDescriptionChange({ target: { value: "Washer" } }, id);
-        
       }
     } else {
       if (newItem === "1R0010001") {
@@ -242,11 +245,9 @@ const Contacts = (props) => {
       return total + discountAmount;
     }, 0);
   };
-  
 const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
   const newDiscountAmount = quantity * newRate * (newDiscountPercentage / 100);
   const finalDiscountAmount = quantity * newRate - newDiscountAmount;
-
   setRows((prevRows) => {
     const updatedRows = prevRows.map((row) => {
       if (row.id === id) {
@@ -254,7 +255,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
           ...row,
           rate: newRate,
           discountPercentage: newDiscountPercentage,
-          discountAmount: newDiscountAmount,
+          discountAmount: newDiscountAmount.toFixed(2),
           totalDiscountAmount: finalDiscountAmount,
         };
       }
@@ -274,7 +275,6 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
   });
 };
 
-  
   const handleActiveChange = (event, id) => {
     const isChecked = event.target.checked;
 
@@ -489,23 +489,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   SGST
                 </Typography>
-                <TextField id="outlined-basic" label="SGST" name="sgst"  {...register('sgst')} variant="outlined" value={sgstValue} disabled />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
-                <Typography
-                  variant="h5"
-                  component="div"
-                  sx={{
-                    color: "black",
-                    fontWeight: "bold",
-                    mb: 2,
-                    mt: 2,
-                    mr: 2
-                  }}
-                >
-                  UGST
-                </Typography>
-                <TextField id="outlined-basic" label="UGST" name="ugst" {...register('ugst')} variant="outlined" value={ugstValue} disabled />
+                <TextField id="outlined-basic" label="SGST" name="sgst"  {...register('sgst')} variant="outlined" value={sgstValue} readOnly sx={{fontWeight:"bold"}} />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography
@@ -521,7 +505,23 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
                 >
                   CGST
                 </Typography>
-                <TextField id="outlined-basic" label="CGST" name="cgst" {...register('cgst')} variant="outlined" disabled />
+                <TextField id="outlined-basic" label="CGST" name="ugst" {...register('ugst')} variant="outlined" value={ugstValue} readOnly />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
+                <Typography
+                  variant="h5"
+                  component="div"
+                  sx={{
+                    color: "black",
+                    fontWeight: "bold",
+                    mb: 2,
+                    mt: 2,
+                    mr: 2
+                  }}
+                >
+                  UGST
+                </Typography>
+                <TextField id="outlined-basic" label="UGST" name="cgst" {...register('cgst')} variant="outlined" disabled />
               </Grid>
               <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
                 <Typography

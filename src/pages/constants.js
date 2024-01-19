@@ -9,9 +9,9 @@ const category = [
     {label:'JW',id:3},
 ];
 const vendors = [
-    {label:'A0001',id:1,description:"ABC LTD",payment_id:1},
-    {label:'V0001',id:2,description:"VICTORY LTD",payment_id:2},
-    {label:'R0001',id:3,description:"RAM LTD",payment_id:2},
+    {label:'A0001',id:1,description:"ABC LTD",payment_id:1,city:"MUMBAI",state:"Maharastra"},
+    {label:'V0001',id:2,description:"VICTORY LTD",payment_id:2,city:"DELHI",state:"DELHI"},
+    {label:'R0001',id:3,description:"RAM LTD",payment_id:2,city:"AHEMDABAD",state:"GUJRAT"},
 ];
 const currency = [
     {label:'RUPEES',id:1},

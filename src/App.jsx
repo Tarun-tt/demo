@@ -4,6 +4,9 @@ import { CssBaseline, ThemeProvider } from '@mui/material'; // reset all default
 import { ColorModeContext, useMode } from './styles/theme';
 import { ToastContainer } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
+import Showtable from './pages/info/showtable';
+import ViewData from './pages/info/View';
+import Test from './pages/info/test';
 
 const App = () => {
 
@@ -28,8 +31,9 @@ const App = () => {
           
                 <Route path="/" element={<Team />} />
                 <Route path="/items" element={<Contacts />} />
-                <Route path="/view/:id" element={<View />} />
-              
+                <Route path="/show" element={<Showtable />} />
+                <Route path="/test" element={<Test />} />
+                <Route path="/view/:id" element={<ViewData/>} />
               </Routes>
               <ToastContainer />
             </section>

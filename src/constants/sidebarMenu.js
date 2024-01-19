@@ -25,7 +25,7 @@ export const sidebarMenu = [
     {
         title: 'DETAIL',
         icon: ReceiptOutlinedIcon,
-        path: '/view/1',
+        path: '/show',
     },
 
 ]

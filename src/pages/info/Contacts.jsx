@@ -151,13 +151,14 @@ const Contacts = (props) => {
       toast.success("Added Successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      
       //setFormData(formData);
     }).catch(error => { //console.log(history.push('/companyDetail'),"jjjjjjjj");
       console.log(error.response);
       toast.error('Some error!');
       
     });
-    navigate("/")
+    navigate("/show")
   };
   
   const handleChange = (event) => {

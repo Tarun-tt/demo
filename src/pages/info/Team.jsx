@@ -123,14 +123,14 @@ const Team = () => {
         // formData['storyStatus'] = 'TO_DO';
         // formData['isActive'] = 1;
         // formData['projectId'] = 0;
-        console.log(formData.division.length);
-        if (formData.division.length == 0) {
+        
+        if (formData.division.length == 0) {console.log(1);
             setDivisionError('Division is required');
             formDirty = true
         } else {
             setDivisionError('');
         }
-        if (formData.category.length == 0) {
+        if (formData.category.length == 0) {console.log(2);
             setCategoryError('Category is required');
             formDirty = true
         } else {
@@ -142,47 +142,36 @@ const Team = () => {
         // } else {
         //     setPonumberError('');
         // }
-        if (formData.store.length == 0) {
+        if (formData.store.length == 0) {console.log(3);
             setStoreError('Store is required');
             formDirty = true
         } else {
             setStoreError('');
         }
         //console.log(formData);
-        if (formData.poDate.length == 0) {
+        if (formData.poDate.length == 0) {console.log(4);
             setPoDateError('Po Date is required');
             formDirty = true
         } else {
             setPoDateError('');
         }
-        if (formData.poDate.length == 0) {
+        if (formData.poDate.length == 0) {console.log(5);
             setAmendDateError('Po Date is required');
             formDirty = true
         } else {
             setAmendDateError('');
         }
 
-        if (formData.poDate.length == 0) {
+        if (formData.poDate.length == 0) {console.log(6);
             setAffDateError('Po Date is required');
             formDirty = true
         } else {
             setAffDateError('');
         }
 
-        if (formData.poDate.length == 0) {
-            setEndDateError('Po Date is required');
-            formDirty = true
-        } else {
-            setEndDateError('');
-        }
-        if (formData.poDate.length == 0) {
-            setEffDateError('Po Date is required');
-            formDirty = true
-        } else {
-            setEffDateError('');
-        }
-        console.log(formData.currencyConverter.length);
-        if (formData.currencyConverter.length == 0) {
+       
+       
+        if (formData.currencyConverter.length == 0) {console.log(7);
             setCurrencyCError('Currency Converter is required');
             formDirty = true
         } else {
@@ -191,37 +180,37 @@ const Team = () => {
 
 
 
-        if (formData.vendor.length == 0) {
+        if (formData.vendor.length == 0) {console.log(8);
             setVendorError('Vendor is required');
             formDirty = true
         } else {
             setVendorError('');
         }
-        if (formData.vendorReNum.length == 0) {
+        if (formData.vendorReNum.length == 0) {console.log(9);
             setVendorReNumError('Vendor Ref. is required');
             formDirty = true
         } else {
             setVendorReNumError('');
         }
-        if (formData.vendorAddress.length == 0) {
+        if (formData?.vendorAddress?.length == 0) {console.log(10);
             setVendorAddressError('Vendor Address is required');
             formDirty = true
         } else {
             setVendorAddressError('');
         }
         
-        if (formData.vendorState.length == 0) {
-            setVendorStateError('Vendor State is required');
-            formDirty = true
-        } else {
-            setVendorStateError('');
-        }
-        if (formData.currency.length == 0) {
-            setCurrencyError('Currency box is required');
-            formDirty = true
-        } else {
-            setCurrencyError('');
-        }
+        // if (formData.vendorState.length == 0) {
+        //     setVendorStateError('Vendor State is required');
+        //     formDirty = true
+        // } else {
+        //     setVendorStateError('');
+        // }
+        // if (formData.currency.length == 0) {console.log(11);
+        //     setCurrencyError('Currency box is required');
+        //     formDirty = true
+        // } else {
+        //     setCurrencyError('');
+        // }
 
         // if (formData.payment_terms.length == 0) {
         //     setPaymentTError('Payment terms is required');
@@ -230,14 +219,14 @@ const Team = () => {
         //     setPaymentTError('');
         // }
 
-        if (formData.mode_of_transport.length == 0) {console.log("jjjjj");
+        if (formData.mode_of_transport.length == 0) {console.log(12);
             setModeoftransportError('Mode of payment is required');
             formDirty = true
         } else {
             setModeoftransportError('');
         }
 
-        if (formData.price_basis.length == 0) {
+        if (formData.price_basis.length == 0) {console.log(13);
             setPricebasisError('Price Basis is required');
             formDirty = true
         } else {
@@ -245,7 +234,7 @@ const Team = () => {
         }
 
 
-
+     console.log(formDirty);
         if (formDirty) {
            
             reset();formData["price_basis"]= priceDesc;
@@ -265,6 +254,8 @@ const Team = () => {
             formData["payment_terms"]= paymentTerms;
             formData["price_desc"]= priceDesc;
             formData["vendorText"] = vendorEvent?.description
+            formData["vendorAddress"] = vendorEvent?.city
+            formData["vendorState"] = vendorEvent?.state
             console.log('form data is - ', formData);
             setFormData(formData);
             setShowTab(false)
@@ -347,8 +338,9 @@ const Team = () => {
                     return res.label;
                 }
             })
-            console.log(pterm[0]);
+            console.log(value);
             setVendorEvent(value);
+            //setVendorCity()
             setPaymentTerms(pterm[0].label)
             setVendorError('');
         }
@@ -647,6 +639,7 @@ const Team = () => {
                                 >
 
                                     <DatePicker label="PO Amend. Date"
+                                    disabled
                                         helperText={amendDateError}
                                         name="amendDate"
                                         disablePast
@@ -806,10 +799,9 @@ const Team = () => {
                                     fontWeight: "bold",
                                     my: 2,
                                     ml: 5
-
                                 }}
                             >
-                                Vendor Address
+                                Vendor City
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -819,10 +811,10 @@ const Team = () => {
                                 autoComplete='given-name'
                                 type='text'
                                 fullWidth
-                                id='vendorAddress'
-                                helperText={vendorAddressError}
-                                onKeyUp={(e, value) => checkValidation('vendorAddress', value)}
-                                error={vendorAddressError && vendorAddressError.length > 0 ? true : false}
+                                disabled
+                                id='vendorAddress'                                
+                                value={vendorEvent?.city}
+                                onKeyUp={(e, value) => checkValidation('vendorAddress', value)}                               
                                 {...register('vendorAddress')}
                             />
                         </Grid>
@@ -842,20 +834,18 @@ const Team = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <Autocomplete
+                            <TextField
                                 disablePortal
                                 id="combo-box-demo"
-                                onChange={(e, value) => checkValidation('vendorState', value)}
+                                onKeyUp={(e, value) => checkValidation('vendorState', value)}
                                 options={vendorState}
                                 sx={{ width: 300 }}
-                                renderInput={(params) => <TextField
-                                    {...params}
-                                    label="Vendor State"
+                                disabled
+                                    
                                     name="vendorState"
-                                    helperText={vendorStateError}
-                                    error={vendorStateError && vendorStateError.length > 0 ? true : false}
+                                    value={vendorEvent?.state}
                                     {...register('vendorState')}
-                                />}
+                                
                             />
                         </Grid>
                         <Grid item xs={12} sm={2}>

@@ -33,6 +33,7 @@ const Team = () => {
     const [comboboxError, setComboboxError] = useState("");
     const [priceDesc, setPriceDesc] = useState("");
     const [amendment, setAmendment] = useState(false);
+    const [selectVendor, setSelectVendor] = useState("");
 
     
     const [vendorReNumError, setVendorReNumError] = useState("");
@@ -285,7 +286,7 @@ const Team = () => {
     }
     const checkValidation = (field, value) => {
         //  let formData = event.target.value;
-
+         console.log(value);
         if (field === 'division') {
             setDivisionError('');
         }
@@ -333,19 +334,20 @@ const Team = () => {
         }
         if (field === 'vendor') {
 
-            const pterm = paymentTerm.filter((res) => {
-                if (res.id == value.payment_id) {
+            const pterm = paymentTerm?.filter((res) => {
+                if (res.id == value?.payment_id) {
                     return res.label;
                 }
             })
             console.log(value);
-            setVendorEvent(value);
+            setSelectVendor(value?.label?value?.label:"")
+            setVendorEvent(value!=null && value?value:"");
             //setVendorCity()
-            setPaymentTerms(pterm[0].label)
+            setPaymentTerms(pterm[0]?.label?pterm[0]?.label:"")
             setVendorError('');
         }
         if (field === 'vendorReNum') {
-            console.log("test");
+            //console.log("test");
             setVendorReNumError('');
         }
         if (field === 'vendorAddress') {            
@@ -765,6 +767,7 @@ const Team = () => {
                                 disablePortal
                                 id="combo-box-demo"
                                 options={vendors}
+                                defaultValue={selectVendor}
                                 onChange={(e, value) => checkValidation('vendor', value)}
                                 renderInput={(params) => <TextField
                                     {...params}
@@ -785,7 +788,7 @@ const Team = () => {
                                 type='text'
                                 fullWidth
                                 id='storyStatus'
-                                value={vendorEvent?.description}
+                                value={vendorEvent?.description?vendorEvent?.description:""}
                                 autoFocus
                                 {...register('vendorText')}
                             />
@@ -813,7 +816,7 @@ const Team = () => {
                                 fullWidth
                                 disabled
                                 id='vendorAddress'                                
-                                value={vendorEvent?.city}
+                                value={vendorEvent?.city?vendorEvent.city:""}
                                 onKeyUp={(e, value) => checkValidation('vendorAddress', value)}                               
                                 {...register('vendorAddress')}
                             />
@@ -843,7 +846,7 @@ const Team = () => {
                                 disabled
                                     
                                     name="vendorState"
-                                    value={vendorEvent?.state}
+                                    value={vendorEvent?.state?vendorEvent.state:""}
                                     {...register('vendorState')}
                                 
                             />

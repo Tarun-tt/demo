@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import Showtable from './pages/info/showtable';
 import ViewData from './pages/info/View';
-import Test from './pages/info/test';
+
 
 const App = () => {
 
@@ -32,7 +32,7 @@ const App = () => {
                 <Route path="/" element={<Team />} />
                 <Route path="/items" element={<Contacts />} />
                 <Route path="/show" element={<Showtable />} />
-                <Route path="/test" element={<Test />} />
+                
                 <Route path="/view/:id" element={<ViewData/>} />
               </Routes>
               <ToastContainer />

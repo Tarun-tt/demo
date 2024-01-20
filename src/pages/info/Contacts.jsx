@@ -95,6 +95,9 @@ const Contacts = (props) => {
   const [sgstValue, setSgstValue] = useState("");
   const [ugstValue, setUgstValue] = useState("");
   const [igstValue, setIgstValue] = useState("");
+  const [disPercent, setDisPercent] = useState(true);
+  const [rateDisabled, setRateDisabled] = useState(true);
+  
   const [selectedValue, setSelectedValue] = useState("perc");
   useEffect(() => {
     if (props?.formdata?.vendorState === "DELHI") {
@@ -106,6 +109,7 @@ const Contacts = (props) => {
       setUgstValue("");
       setIgstValue(18);
     }
+    window.scrollTo(0, 0)
   }, [props?.formdata?.vendorState]);
   const isJobWorkCategory = props?.formdata?.category === "JW";
   const handleFormSubmit = (formDataNew) => {console.log(formDataNew);
@@ -137,7 +141,7 @@ const Contacts = (props) => {
     formDataNew['rate_unit']=formDataNew.formDataNew.rateunit
     formDataNew['uom']=formDataNew.formDataNew.uom
     
-    formDataNew['po_value']=totalAmountWith18Percent.toFixed(2);
+    formDataNew['po_value']=totalAmountWith18Percent;
     formDataNew["itemsData"]=JSON.stringify(formDataArray);
     console.log('formDataArray:', formDataNew);
 
@@ -166,13 +170,18 @@ const Contacts = (props) => {
 };
   const handleRateChange = (event, id) => {
     const newRate = parseFloat(event.target.value) || 0;
+    if(event.target.value.length>0){
+      setDisPercent(false);
+     }else{
+      setDisPercent(true);
+     }
     setRate(newRate);
     recalculateDiscountAmount(newRate, discountPercentage, id);
   };
   const handleItemChange = (event, id) => {
     const newItem = event.target.value;
     setICode(newItem);
-
+    
     // if (newItem === "1R0010001") {
     //   handleHsnChange({ target: { value: "87089900" } }, id);
     //   handleDescriptionChange({ target: { value: "Sheet 1000 * 1200" } }, id);
@@ -182,6 +191,8 @@ const Contacts = (props) => {
     //   handleDescriptionChange({ target: { value: "Washer" } }, id);
      
     // }
+    handleRateChange({ target: { value: 0 } }, id);
+    handleDiscountPercentageChange({ target: { value: 0 } }, id);
     if (newItem === "1R0010001" || newItem === "1C0010001") {
       handleActiveChange({ target: { checked: true } }, id); 
       handleDiscountPercentageChange({ target: { value: 0 } }, id); 
@@ -224,7 +235,13 @@ const Contacts = (props) => {
     const newDesc = event.target.value;
     handleCellChange(id, "desc", newDesc);
   };
-  const handleQuantityChange = (event, id) => {
+  const handleQuantityChange = (event, id) => {console.log(event.target.value.length);
+    if(event.target.value.length>0){
+     setRateDisabled(false);
+    }else{
+      setRateDisabled(true);
+    }
+
     const newQuan = parseFloat(event.target.value) || 0;
     setQuantity(newQuan);
     handleCellChange(id, "quan", newQuan);
@@ -256,7 +273,7 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
           rate: newRate,
           discountPercentage: newDiscountPercentage,
           discountAmount: newDiscountAmount.toFixed(2),
-          totalDiscountAmount: finalDiscountAmount,
+          totalDiscountAmount: finalDiscountAmount.toFixed(2),
         };
       }
       return row;
@@ -267,9 +284,9 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
     handleCellChange(id, 'discountAmount', newDiscountAmount);
 
     const updatedTotalDiscountAmount = calculateTotalDiscountAmount(updatedRows);
-    setTotalDiscountAmount(updatedTotalDiscountAmount);
+    setTotalDiscountAmount(updatedTotalDiscountAmount && updatedTotalDiscountAmount?updatedTotalDiscountAmount.toFixed(2):0 );
     const updatedTotalAmountWith18Percent = updatedTotalDiscountAmount * 1.18;
-    setTotalAmountWith18Percent(updatedTotalAmountWith18Percent);
+    setTotalAmountWith18Percent(updatedTotalAmountWith18Percent && updatedTotalAmountWith18Percent?updatedTotalAmountWith18Percent.toFixed(2):0);
 
     return updatedRows;
   });
@@ -346,8 +363,8 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
     { field: "name", headerName: "Job work Sac", flex: 1, editable: true, renderCell: (params) => <TextField variant="standard" value={params.row.name} onChange={(event) => handleJobChange(event, params.row.id)} /> },
     { field: "desc", headerName: "Description", flex: 2.5, editable: true, renderCell: (params) => <TextField fullWidth variant="standard" value={params.row.desc} onChange={(event) => handleDescriptionChange(event, params.row.id)} /> },
     { field: "quan", headerName: "Quantity", flex: 1, type: 'number', renderCell: (params) => <TextField variant="standard" value={params.row.quan} onChange={(event) => handleQuantityChange(event, params.row.id)} /> },
-    { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.rate} onChange={(event) => handleRateChange(event, params.row.id)} /> },
-    { field: 'discountPercentage', headerName: 'Discount %', type: 'number', renderCell: (params) => <TextField variant="standard" value={params.row.discountPercentage} onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
+    { field: 'rate', headerName: 'Rate', flex: 1, renderCell: (params) => <TextField variant="standard" value={params.row.rate} disabled={rateDisabled} onChange={(event) => handleRateChange(event, params.row.id)} /> },
+    { field: 'discountPercentage', headerName: 'Discount %', type: 'number', renderCell: (params) => <TextField variant="standard" disabled={disPercent} value={params.row.discountPercentage} onChange={(event) => handleDiscountPercentageChange(event, params.row.id)} /> },
     { field: 'discountAmount', headerName: 'Discount Amount', flex: 1, value: discountAmount, renderCell: (params) => <TextField variant="standard" value={params.row.discountAmount} disabled />, },
     {
       field: 'isActive', headerName: 'Acton', flex: 1, renderCell: (params) => (
@@ -433,10 +450,10 @@ const recalculateDiscountAmount = (newRate, newDiscountPercentage, id) => {
       </Box>
       <Box component={Paper} sx={{ mt: 3, display: "flex", flexDirection: "row", gap: 5, padding: 2 }} >
         <Typography variant="h6" sx={{ color: "black", fontWeight: "bold", }}>
-          After Discount Amount: {totalDiscountAmount.toFixed(2)}
+          After Discount Amount: {totalDiscountAmount && totalDiscountAmount?totalDiscountAmount:"0"}
         </Typography>
         <Typography variant="h6" sx={{ color: "black", fontWeight: "bold", }}>          
-          Total Amount with GST: {totalAmountWith18Percent.toFixed(2)}
+          Total Amount with GST: {totalAmountWith18Percent && totalAmountWith18Percent?totalAmountWith18Percent:"0"}
         </Typography>
       </Box>
 
